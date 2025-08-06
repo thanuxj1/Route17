@@ -1,0 +1,79 @@
+/* navbar.css */
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+.logo {
+  color: #fde68a;
+  font-size: 1.75rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  color: #f59e42;
+  cursor: pointer;
+  display: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: #fde68a;
+  text-decoration: none;
+  font-size: 1.125rem;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: #fbbf24;
+}
+
+.login-button {
+  background-color: #d97706;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border: 2px solid #d97706;
+  transition: background-color 0.2s;
+}
+.login-button:hover {
+  background-color: #fbbf24;
+  border-color: #fde68a;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #1a202c;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    display: none;
+    z-index: 50;
+    border-top: 1px solid #d97706;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+}
