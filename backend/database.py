@@ -3,7 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # 👉 Connection string to MySQL
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:hazard@localhost/bustracker"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MjkScrMUjubAAKGBavbkapBNhwQeKEVV@yamanote.proxy.rlwy.net:26171/railway"
+
+
 
 # 👉 SQLAlchemy engine
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
