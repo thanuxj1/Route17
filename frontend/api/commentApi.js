@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/comments"; // Changed port to 8000 to match backend
+const API_URL = "https://route17-production.up.railway.app/comments"; // Changed port to 8000 to match backend
 
 export const commentAPI = {
   // Get all comments for a specific bus
@@ -31,7 +31,7 @@ export const commentAPI = {
   // Get vote count for a comment (if using separate votes)
   async getVotes(commentId) {
     try {
-      const response = await axios.get(`http://localhost:8000/votes/comment/${commentId}`);
+      const response = await axios.get(`https://route17-production.up.railway.app/votes/comment/${commentId}`);
       return response.data.total;
     } catch (error) {
       console.error("Error fetching votes:", error);
