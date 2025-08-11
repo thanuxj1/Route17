@@ -42,7 +42,7 @@ export const commentAPI = {
   // Submit a vote (if using separate votes)
   async submitVote(commentId, userId, value) {
     try {
-      await axios.post('http://localhost:8000/votes/', {
+      await axios.post('https://route17-production.up.railway.app/votes/', {
         comment_id: commentId,
         user_id: userId,
         value: value

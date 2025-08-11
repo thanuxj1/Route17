@@ -10,7 +10,7 @@ export default function CommentSection({ busId }) {
 
   const fetchComments = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/comments/${busId}`, {
+      const res = await axios.get(`https://route17-production.up.railway.app/comments/${busId}`, {
   params: { user_id: 1 }  // Replace 1 with real user ID in production
 });
 
@@ -34,7 +34,7 @@ setUserVotes(initialVotes);
     if (!newComment.trim()) return;
 
     try {
-      await axios.post("http://localhost:8000/comments/", {
+      await axios.post("https://route17-production.up.railway.app/comments/", {
         content: newComment,
         bus_id: busId,
       });
@@ -73,7 +73,7 @@ setUserVotes(initialVotes);
         return [...updated].sort((a, b) => (b.votes || 0) - (a.votes || 0));
       });
 
-      await axios.post("http://localhost:8000/votes/", {
+      await axios.post("https://route17-production.up.railway.app/votes/", {
   user_id: 1,  // use actual user ID in real app
   comment_id: commentId,
   value: newVoteValue
