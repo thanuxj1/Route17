@@ -12,22 +12,28 @@
   @apply bg-gray-100 text-left;
 }
 
-.table-header-cell {
-  @apply border border-gray-300 px-4 py-2;
-}
-
-.table-row {
-  @apply hover:bg-gray-50;
-}
-
+.table-header-cell,
 .table-cell {
-  @apply border border-gray-300 px-4 py-2;
+  @apply border border-gray-300 px-4 py-2 text-base;
 }
 
-.button {
-  @apply bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600 transition;
+/* Make table cells more compact on small screens */
+@media (max-width: 640px) {
+  .table-header-cell,
+  .table-cell {
+    padding-left: 0.5rem;   /* px-2 */
+    padding-right: 0.5rem;  /* px-2 */
+    padding-top: 0.25rem;   /* py-1 */
+    padding-bottom: 0.25rem;/* py-1 */
+    font-size: 0.875rem;    /* text-sm */
+  }
+  .button,
+  .delete-button {
+    padding-left: 0.5rem;   /* px-2 */
+    padding-right: 0.5rem;  /* px-2 */
+    padding-top: 0.25rem;   /* py-1 */
+    padding-bottom: 0.25rem;/* py-1 */
+    font-size: 0.875rem;    /* text-sm */
+  }
 }
 
-.delete-button {
-  @apply bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition;
-}
