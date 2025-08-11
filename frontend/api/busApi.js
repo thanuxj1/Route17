@@ -3,7 +3,7 @@
 
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"; // Backend URL
+const BASE_URL = "http://127.0.0.1:8000"; // Backend URL
 
 export const getBusTimes = async () => {
   const response = await axios.get(`${BASE_URL}/bus/`);
