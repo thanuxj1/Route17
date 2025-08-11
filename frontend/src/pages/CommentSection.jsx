@@ -108,10 +108,11 @@ setComments(prev => {
   useEffect(() => {
     fetchComments();
   }, [busId]);
-
-  return (
-    <div className="comments-section mt-4 pt-4">
-      <h3 className="comments-title">Comments</h3>
+return (
+  <div className="comments-section mt-4 pt-4">
+    <h3 className="comments-title">Comments</h3>
+    {/* Desktop/table layout */}
+    <div className="show-desktop">
       <form onSubmit={handleSubmit} className="flex mb-4 gap-2">
         <textarea
           className="comment-input"
@@ -124,7 +125,6 @@ setComments(prev => {
           Post
         </button>
       </form>
-
       <div className="comments-container">
         {comments.length > 0 ? (
           comments.map((comment) => (
@@ -140,7 +140,6 @@ setComments(prev => {
                     ▲
                   </button>
                   <span className="comment-number">{comment.total_votes || 0}</span>
-
                   <button
                     className={`${userVotes[comment.id] === -1 ? 'text-red-600' : 'text-red-400'} hover:text-red-300`}
                     onClick={() => handleVote(comment.id, "down")}
@@ -158,5 +157,52 @@ setComments(prev => {
         )}
       </div>
     </div>
+    {/* Mobile/card layout */}
+    <div className="show-mobile">
+      <form onSubmit={handleSubmit} className="flex flex-col mb-4 gap-2">
+        <textarea
+          className="comment-input"
+          rows="2"
+          placeholder="Add your comment..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+        />
+        <button type="submit" className="post-button">
+          Post
+        </button>
+      </form>
+      <div className="comments-container">
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <div key={comment.id} className="comment-item" style={{ marginBottom: "1rem", borderRadius: "0.5rem", background: "#181c23" }}>
+              <p style={{ marginBottom: "0.5rem" }}>{comment.content}</p>
+              <div className="flex justify-between items-center mt-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    className={`${userVotes[comment.id] === 1 ? 'text-green-600' : 'text-green-400'} hover:text-green-300`}
+                    onClick={() => handleVote(comment.id, "up")}
+                    disabled={isVoting}
+                  >
+                    ▲
+                  </button>
+                  <span className="comment-number">{comment.total_votes || 0}</span>
+                  <button
+                    className={`${userVotes[comment.id] === -1 ? 'text-red-600' : 'text-red-400'} hover:text-red-300`}
+                    onClick={() => handleVote(comment.id, "down")}
+                    disabled={isVoting}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <span className="text-xs text-gray-400">#{comment.id}</span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="no-comments">No comments yet.</p>
+        )}
+      </div>
+    </div>
+  </div>
   );
 }

@@ -185,4 +185,30 @@
   border-top: 1px solid #b45309;
   padding-top: 1rem;
 }
+.show-mobile { display: none; }
+.show-desktop { display: block; }
 
+@media (max-width: 640px) {
+  .show-mobile { display: block; }
+  .show-desktop { display: none; }
+  .bus-card {
+    background: #181c23;
+    color: #ffe082;
+    border: 1px solid #ffa726;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .expand-icon {
+    color: #ffe082;
+    cursor: pointer;
+  }
+}
+.show-mobile { display: none; }
+.show-desktop { display: block; }
+
+@media (max-width: 640px) {
+  .show-mobile { display: block; }
+  .show-desktop { display: none; }
+}
