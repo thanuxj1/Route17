@@ -43,5 +43,38 @@
     max-width: 80px;         /* Even smaller on mobile */
   }
 }
+.show-mobile {
+  display: none;
+}
+.show-desktop {
+  display: block;
+}
 
+@media (max-width: 640px) {
+  .show-mobile {
+    display: block;
+  }
+  .show-desktop {
+    display: none;
+  }
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .bus-card {
+    background: #181c23;
+    color: #ffe082;
+    border: 1px solid #ffa726;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .card-actions {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+}
 
