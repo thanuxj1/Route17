@@ -46,3 +46,12 @@ def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_comment)
     return new_comment
+
+@router.delete("/delete/{comment_id}")
+def delete_comment(comment_id: int, db: Session = Depends(get_db)):
+    comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    if not comment:
+        return {"message": "Comment already deleted or not found"}
+    db.delete(comment)
+    db.commit()
+    return {"message": "Comment deleted successfully"}

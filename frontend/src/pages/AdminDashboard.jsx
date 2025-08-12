@@ -1,5 +1,3 @@
-// src/components/Dashboard.jsx
-
 import { useEffect, useState } from "react";
 import {
   getBusTimes,
@@ -7,11 +5,13 @@ import {
   updateBusTime,
   deleteBusTime,
 } from "../../api/busApi";
+import { getComments,deleteComment} from "../../api/commentApi"; // make sure you have getComments here
 import { useAuth } from "../pages/AuthContext";
 import { LogOut, LoaderCircle } from "lucide-react";
 
 function Dashboard() {
   const [busTimes, setBusTimes] = useState([]);
+  const [comments, setComments] = useState({}); // key: busId, value: array of comments
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
     bus_number: "",
@@ -26,10 +26,19 @@ function Dashboard() {
     fetchBusTimes();
   }, []);
 
+  // Fetch bus times and comments for each bus
   const fetchBusTimes = async () => {
     setLoading(true);
     const data = await getBusTimes();
     setBusTimes(data);
+
+    // Fetch comments for each bus
+    const commentsData = {};
+    for (const bus of data) {
+      commentsData[bus.id] = await getComments(bus.id, 1); // Always pass user_id
+    }
+    setComments(commentsData);
+
     setLoading(false);
   };
 
@@ -59,6 +68,20 @@ function Dashboard() {
     fetchBusTimes();
   };
 
+  const handleDeleteComment = async (commentId, busId) => {
+  console.log("Deleting comment id:", commentId, "for bus:", busId);
+  try {
+    await deleteComment(commentId);
+    setComments((prev) => ({
+      ...prev,
+      [busId]: prev[busId].filter((c) => c.id !== commentId),
+    }));
+  } catch (error) {
+    console.error("Failed to delete comment", error);
+  }
+};
+
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -78,9 +101,7 @@ function Dashboard() {
         Logout
       </button>
 
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        🚌 Bus Times Dashboard
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">🚌 Bus Times Dashboard</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4 mb-8">
         <input
@@ -122,34 +143,59 @@ function Dashboard() {
         {busTimes.map((bus) => (
           <li
             key={bus.id}
-            className="p-4 border rounded flex justify-between items-center"
+            className="p-4 border rounded flex flex-col gap-4"
           >
-            <div className="space-y-1">
-              <p>
-                <span className="font-semibold">Bus:</span> {bus.bus_number}
-              </p>
-              <p>
-                <span className="font-semibold">Destination:</span>{" "}
-                {bus.destination}
-              </p>
-              <p>
-                <span className="font-semibold">Arrival:</span>{" "}
-                {bus.arrival_time}
-              </p>
+            <div className="flex justify-between items-center">
+              <div className="space-y-1">
+                <p>
+                  <span className="font-semibold">Bus:</span> {bus.bus_number}
+                </p>
+                <p>
+                  <span className="font-semibold">Destination:</span> {bus.destination}
+                </p>
+                <p>
+                  <span className="font-semibold">Arrival:</span> {bus.arrival_time}
+                </p>
+              </div>
+              <div className="space-x-2">
+                <button
+                  onClick={() => handleEdit(bus)}
+                  className="bg-yellow-400 px-3 py-1 rounded hover:bg-yellow-500"
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(bus.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  🗑️ Delete
+                </button>
+              </div>
             </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => handleEdit(bus)}
-                className="bg-yellow-400 px-3 py-1 rounded hover:bg-yellow-500"
-              >
-                ✏️ Edit
-              </button>
-              <button
-                onClick={() => handleDelete(bus.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                🗑️ Delete
-              </button>
+
+            {/* Comments section */}
+            <div>
+              <h3 className="font-semibold mb-2">Comments:</h3>
+              {comments[bus.id]?.length ? (
+                <ul className="space-y-2">
+                  {comments[bus.id].map((comment) => (
+                    <li
+                      key={comment.id}
+                      className="border p-2 rounded flex justify-between items-center"
+                    >
+                      <p>{comment.content}</p>
+                      <button
+                        onClick={() => handleDeleteComment(comment.id, bus.id)}
+                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No comments yet.</p>
+              )}
             </div>
           </li>
         ))}
