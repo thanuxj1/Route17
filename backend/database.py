@@ -1,10 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
+import os
+
+# Load .env file
+load_dotenv()
 
 # 👉 Connection string to MySQL
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MjkScrMUjubAAKGBavbkapBNhwQeKEVV@yamanote.proxy.rlwy.net:26171/railway"
-
+SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
 
 
 # 👉 SQLAlchemy engine
