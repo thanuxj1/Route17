@@ -38,7 +38,8 @@ def get_all_bus_times(db: Session):
             "id": bus.id,
             "bus_number": bus.bus_number,
             "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),
-            "destination": bus.destination
+            "destination": bus.destination,
+            "status": bus.status
         }
         for bus in buses
     ]
