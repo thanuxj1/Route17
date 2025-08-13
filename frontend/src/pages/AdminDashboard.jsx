@@ -29,19 +29,16 @@ function Dashboard() {
   }, []);
  const handleCheckboxChange = async (busId, checked) => {
   try {
-    // update backend if needed
-    await updateBusTime(busId, { status: checked ? "Inactive" : "Active" }); // ❌ only sending status
-    setCheckedBuses((prev) => ({
-      ...prev,
-      [busId]: checked,
-    }));
+    await updateBusTime(busId, { checked }); // ✅ only send checked
+    setCheckedBuses(prev => ({ ...prev, [busId]: checked }));
     setBusTimes(prev =>
       prev.map(bus => bus.id === busId ? { ...bus, checked } : bus)
     );
   } catch (err) {
-    console.error(err);
+    console.error("❌ Update bus time failed:", err.response?.data || err);
   }
 };
+
 
 
 

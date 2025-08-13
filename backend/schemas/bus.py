@@ -30,8 +30,25 @@ class BusTimeBase(BaseModel):
 class BusTimeCreate(BusTimeBase):
     pass
 
-class BusTimeUpdate(BusTimeBase):
-    pass
+
+class BusTimeUpdate(BaseModel):
+    bus_number: Optional[str]
+    arrival_time: Optional[time]
+    destination: Optional[str]
+    status: Optional[str]
+    checked: Optional[bool]
+
+    @field_validator("arrival_time", mode="before")
+    def validate_arrival_time(cls, v):
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            parts = list(map(int, v.split(":")))
+            if len(parts) == 2:
+                return time(parts[0], parts[1])
+            elif len(parts) == 3:
+                return time(parts[0], parts[1], parts[2])
+        return v
 
 class BusTimeResponse(BusTimeBase):
     id: int

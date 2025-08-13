@@ -31,12 +31,13 @@ def get_all_bus_times(db: Session):
 def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
     bus_db = db.query(BusTime).filter(BusTime.id == bus_id).first()
     if bus_db:
-        for key, value in bus.dict().items():
+        for key, value in bus.dict(exclude_unset=True).items():  # ❌ only fields actually sent
             setattr(bus_db, key, value)
         db.commit()
         db.refresh(bus_db)
         return bus_db
     return None
+
 
 
 def delete_bus_time(db: Session, bus_id: int):
