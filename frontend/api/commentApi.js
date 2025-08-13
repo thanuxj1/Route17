@@ -1,55 +1,87 @@
 import axios from "axios";
 
-const API_URL = "https://route17-production.up.railway.app/comments";
+const API_BASE = "https://route17-production.up.railway.app";
+const COMMENTS_URL = `${API_BASE}/comments`;
+const VOTES_URL = `${API_BASE}/votes`;
 
-// Get all comments for a specific bus
+/**
+ * Get all comments for a specific bus
+ * @param {number} busId 
+ * @param {number} userId 
+ * @returns {Promise<Array>}
+ */
 export async function getComments(busId, userId = 1) {
-  const response = await axios.get(`${API_URL}/${busId}`, {
-    params: { user_id: userId }
-  });
-  return response.data;
-}
-
-// Create a new comment
-export async function createComment(commentData) {
   try {
-    const response = await axios.post(API_URL, {
-      content: commentData.content,
-      bus_id: commentData.busId
+    const { data } = await axios.get(`${COMMENTS_URL}/${busId}`, {
+      params: { user_id: userId }
     });
-    return response.data;
-  } catch (error) {
-    console.error("Error posting comment:", error);
-    throw error;
+    return data;
+  } catch (err) {
+    console.error("Error fetching comments:", err);
+    return [];
   }
 }
 
-// Delete a comment
-export async function deleteComment(commentId) {
-  const response = await axios.delete(`${API_URL}/delete/${commentId}`);
-  return response.data;
+/**
+ * Create a new comment
+ * @param {{content: string, busId: number}} commentData
+ * @returns {Promise<Object>}
+ */
+export async function createComment({ content, busId }) {
+  try {
+    const { data } = await axios.post(COMMENTS_URL, { content, bus_id: busId });
+    return data;
+  } catch (err) {
+    console.error("Error posting comment:", err);
+    throw err;
+  }
 }
-// Get vote count for a comment
+
+/**
+ * Delete a comment
+ * @param {number} commentId
+ * @returns {Promise<Object>}
+ */
+export async function deleteComment(commentId) {
+  try {
+    const { data } = await axios.delete(`${COMMENTS_URL}/delete/${commentId}`);
+    return data;
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get vote count for a comment
+ * @param {number} commentId
+ * @returns {Promise<number>}
+ */
 export async function getVotes(commentId) {
   try {
-    const response = await axios.get(`https://route17-production.up.railway.app/votes/comment/${commentId}`);
-    return response.data.total;
-  } catch (error) {
-    console.error("Error fetching votes:", error);
+    const { data } = await axios.get(`${VOTES_URL}/comment/${commentId}`);
+    return data.total ?? 0;
+  } catch (err) {
+    console.error("Error fetching votes:", err);
     return 0;
   }
 }
 
-// Submit a vote
+/**
+ * Submit a vote
+ * @param {number} commentId
+ * @param {number} userId
+ * @param {number} value
+ */
 export async function submitVote(commentId, userId, value) {
   try {
-    await axios.post('https://route17-production.up.railway.app/votes/', {
+    await axios.post(`${VOTES_URL}/`, {
       comment_id: commentId,
       user_id: userId,
-      value: value
+      value
     });
-  } catch (error) {
-    console.error("Error submitting vote:", error);
-    throw error;
+  } catch (err) {
+    console.error("Error submitting vote:", err);
+    throw err;
   }
 }
