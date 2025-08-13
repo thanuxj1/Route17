@@ -9,41 +9,23 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
     try:
         new_bus = BusTime(
             bus_number=bus.bus_number,
-            arrival_time=bus.arrival_time,  # ✅ already a time object
+            arrival_time=bus.arrival_time,
             destination=bus.destination,
-            status=bus.status
+            status=bus.status,
+            checked=bus.checked
         )
 
         db.add(new_bus)
         db.commit()
         db.refresh(new_bus)
-
-        return {
-            "id": new_bus.id,
-            "bus_number": new_bus.bus_number,
-            "arrival_time": new_bus.arrival_time.strftime("%H:%M:%S"),  # ✅ return as string
-            "destination": new_bus.destination,
-            "status": bus.status or "On Time" 
-            
-        }
+        return new_bus  # <- return the object, NOT a dict
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
 
 def get_all_bus_times(db: Session):
-    buses = db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
-    return [
-        {
-            "id": bus.id,
-            "bus_number": bus.bus_number,
-            "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),
-            "destination": bus.destination,
-            "status": bus.status,
-            "checked": bus.checked  # ✅ include checked
-        }
-        for bus in buses
-    ]
+    return db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
 
 
 def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
@@ -53,10 +35,18 @@ def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
             setattr(bus_db, key, value)
         db.commit()
         db.refresh(bus_db)
-    return bus_db
+        return bus_db
+    return None
 
 
 def delete_bus_time(db: Session, bus_id: int):
+    bus_db = db.query(BusTime).filter(BusTime.id == bus_id).first()
+    if bus_db:
+        db.delete(bus_db)
+        db.commit()
+        return bus_db
+    return None
+
     bus = db.query(BusTime).filter(BusTime.id == bus_id).first()
     if bus:
         db.delete(bus)
