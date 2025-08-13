@@ -6,7 +6,6 @@ class BusTimeBase(BaseModel):
     bus_number: str
     arrival_time: time  # ✅ Use time type directly
     destination: str
-    status: str   # ✅ Added here
 
     @field_validator("arrival_time", mode="before")
     def validate_arrival_time(cls, v):

@@ -10,8 +10,7 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
         new_bus = BusTime(
             bus_number=bus.bus_number,
             arrival_time=bus.arrival_time,  # ✅ already a time object
-            destination=bus.destination,
-            status=bus.status
+            destination=bus.destination
         )
 
         db.add(new_bus)
@@ -22,8 +21,7 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
             "id": new_bus.id,
             "bus_number": new_bus.bus_number,
             "arrival_time": new_bus.arrival_time.strftime("%H:%M:%S"),  # ✅ return as string
-            "destination": new_bus.destination,
-            "status":bus.status
+            "destination": new_bus.destination
         }
     except Exception as e:
         db.rollback()
@@ -31,19 +29,17 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
 
 
 def get_all_bus_times(db: Session):
-    buses = db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
+    return db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
+    # Convert time objects to strings for response
     return [
         {
             "id": bus.id,
             "bus_number": bus.bus_number,
-            "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),  # Convert to string
-            "destination": bus.destination,
-            "status": bus.status
+            "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),
+            "destination": bus.destination
         }
         for bus in buses
     ]
-
-
 
 def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
     bus_db = db.query(BusTime).filter(BusTime.id == bus_id).first()

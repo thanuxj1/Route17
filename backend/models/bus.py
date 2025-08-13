@@ -1,3 +1,5 @@
+# models/bus.py
+
 from sqlalchemy import Column, Integer, String, Time
 from database import Base
 
@@ -8,4 +10,3 @@ class BusTime(Base):
     bus_number = Column(String(255), nullable=False)
     arrival_time = Column(Time, nullable=False)
     destination = Column(String(255), nullable=False)
-    status = Column(String(10), nullable=False, default="Unknown")
