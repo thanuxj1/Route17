@@ -36,7 +36,7 @@ def get_all_bus_times(db: Session):
         {
             "id": bus.id,
             "bus_number": bus.bus_number,
-            "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),  # string for frontend
+            "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),  # Convert to string
             "destination": bus.destination,
             "status": bus.status
         }
