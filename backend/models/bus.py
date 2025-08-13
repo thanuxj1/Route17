@@ -11,3 +11,4 @@ class BusTime(Base):
     arrival_time = Column(Time, nullable=False)
     destination = Column(String(255), nullable=False)
     status = Column(String(50), nullable=False)  # Added status field
+    checked = Column(Boolean, default=False)  # ✅ Add this

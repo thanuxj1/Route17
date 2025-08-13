@@ -32,18 +32,19 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
 
 
 def get_all_bus_times(db: Session):
-    return db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
-    # Convert time objects to strings for response
+    buses = db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
     return [
         {
             "id": bus.id,
             "bus_number": bus.bus_number,
             "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),
             "destination": bus.destination,
-            "status": bus.status
+            "status": bus.status,
+            "checked": bus.checked  # ✅ include checked
         }
         for bus in buses
     ]
+
 
 def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
     bus_db = db.query(BusTime).filter(BusTime.id == bus_id).first()
@@ -53,6 +54,7 @@ def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
         db.commit()
         db.refresh(bus_db)
     return bus_db
+
 
 def delete_bus_time(db: Session, bus_id: int):
     bus = db.query(BusTime).filter(BusTime.id == bus_id).first()

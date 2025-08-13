@@ -76,6 +76,14 @@ const BusForm = ({ onSubmit, editData }) => {
         }
         required
       />
+      <input
+  type="checkbox"
+  checked={isChecked}
+  onChange={() => handleCheckboxChange(bus.id, !isChecked)} // send new value
+  style={{ marginRight: "8px" }}
+/>
+
+
       <button type="submit">{editData ? "Update" : "Add"} Bus Time</button>
     </form>
   );

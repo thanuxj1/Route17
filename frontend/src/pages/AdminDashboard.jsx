@@ -22,10 +22,30 @@ function Dashboard() {
   status: "" // ✅ Add here
 });
   const [editId, setEditId] = useState(null);
+    const [checkedBuses, setCheckedBuses] = useState({});
 
   useEffect(() => {
     fetchBusTimes();
   }, []);
+  const handleCheckboxChange = async (busId, checked) => {
+  try {
+    // update backend if needed
+    await updateBusTime(busId, { status: checked ? "Inactive" : "Active" }); // optional
+    setCheckedBuses((prev) => ({
+      ...prev,
+      [busId]: checked,
+    }));
+    setBusTimes(prev =>
+      prev.map(bus => bus.id === busId ? { ...bus, checked } : bus)
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+
+
 
   const fetchBusTimes = async () => {
     setLoading(true);
@@ -135,62 +155,89 @@ const handleEdit = (bus) => {
       </form>
 
       <ul className="bus-grid">
-        {busTimes.map((bus) => (
-          <li key={bus.id} className="bus-card">
-            <div className="bus-info">
-              <p className="bus-number">{bus.bus_number}</p>
-              <p className="bus-detail">
-                <span className="bus-label">Destination:</span>
-                <span className="bus-value">{bus.destination}</span>
-              </p>
-              <p className="bus-detail">
-                <span className="bus-label">Arrival:</span>
-                <span className="bus-value">{bus.arrival_time}</span>
-              </p>
-              <p className="bus-detail">
-  <span className="bus-label">Status:</span>
-  <span className="bus-value">{bus.status}</span>
-</p>
+  {busTimes.map((bus) => {
+    const isChecked = checkedBuses[bus.id] || false;
+    return (
+      <li
+        key={bus.id}
+        className="bus-card"
+        style={{ opacity: isChecked ? 0.5 : 1 }}
+      >
+        <div className="bus-info">
+          {/* ✅ Checkbox */}
+          <input
+  type="checkbox"
+  checked={isChecked}
+  onChange={() => handleCheckboxChange(bus.id, !isChecked)} // pass new value
+  style={{ marginRight: "8px" }}
+/>
 
-            </div>
 
-            <div className="bus-actions">
-              <button className="edit-button" onClick={() => handleEdit(bus)}>
-                ✏️ Edit
-              </button>
-              <button
-                className="delete-button"
-                onClick={() => handleDelete(bus.id)}
-              >
-                🗑️ Delete
-              </button>
-            </div>
+          <p className="bus-number">{bus.bus_number}</p>
 
-            <div className="comments-section">
-              <div className="comments-header">Comments:</div>
-              <ul className="comments-list">
-                {comments[bus.id]?.length ? (
-                  comments[bus.id].map((comment) => (
-                    <li key={comment.id} className="comment-item">
-                      <p className="comment-content">{comment.content}</p>
-                      <button
-                        className="comment-delete"
-                        onClick={() =>
-                          handleDeleteComment(comment.id, bus.id)
-                        }
-                      >
-                        Delete
-                      </button>
-                    </li>
-                  ))
-                ) : (
-                  <p className="no-comments">No comments yet.</p>
-                )}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ul>
+          <p className="bus-detail">
+            <span className="bus-label">Destination:</span>
+            <span className="bus-value">{bus.destination}</span>
+          </p>
+
+          <p className="bus-detail">
+            <span className="bus-label">Arrival:</span>
+            <span
+              className="bus-value"
+              style={{ color: isChecked ? "red" : "inherit" }}
+            >
+              {bus.arrival_time}
+            </span>
+          </p>
+
+          <p className="bus-detail">
+            <span className="bus-label">Status:</span>
+            <span
+              className="bus-value"
+              style={{ color: isChecked ? "red" : "inherit" }}
+            >
+              {bus.status}
+            </span>
+          </p>
+        </div>
+
+        <div className="bus-actions">
+          <button className="edit-button" onClick={() => handleEdit(bus)}>
+            ✏️ Edit
+          </button>
+          <button
+            className="delete-button"
+            onClick={() => handleDelete(bus.id)}
+          >
+            🗑️ Delete
+          </button>
+        </div>
+
+        <div className="comments-section">
+          <div className="comments-header">Comments:</div>
+          <ul className="comments-list">
+            {comments[bus.id]?.length ? (
+              comments[bus.id].map((comment) => (
+                <li key={comment.id} className="comment-item">
+                  <p className="comment-content">{comment.content}</p>
+                  <button
+                    className="comment-delete"
+                    onClick={() => handleDeleteComment(comment.id, bus.id)}
+                  >
+                    Delete
+                  </button>
+                </li>
+              ))
+            ) : (
+              <p className="no-comments">No comments yet.</p>
+            )}
+          </ul>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
     </div>
   );
 }
