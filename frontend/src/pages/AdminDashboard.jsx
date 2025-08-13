@@ -8,8 +8,7 @@ import {
   deleteBusTime,
 } from "../../api/busApi";
 import { getComments, deleteComment } from "../../api/commentApi";
-import { useAuth } from "../pages/AuthContext";
-import { LogOut, LoaderCircle } from "lucide-react";
+import {  LoaderCircle } from "lucide-react";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -22,8 +21,6 @@ function Dashboard() {
     destination: "",
   });
   const [editId, setEditId] = useState(null);
-
-  const { logout } = useAuth();
 
   useEffect(() => {
     fetchBusTimes();

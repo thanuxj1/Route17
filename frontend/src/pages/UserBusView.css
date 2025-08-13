@@ -14,7 +14,7 @@
 .bus-header {
   background: linear-gradient(to right, #1a202c, #000);
   border-bottom: 2px solid #d97706;
-  padding: 1rem 1.5rem;
+  padding: 0.1rem 1.5rem;
 }
 
 .header-title {

@@ -29,7 +29,7 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
 
 
 def get_all_bus_times(db: Session):
-    buses = db.query(BusTime).all()
+    return db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
     # Convert time objects to strings for response
     return [
         {
