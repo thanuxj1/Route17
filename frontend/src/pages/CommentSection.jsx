@@ -110,14 +110,14 @@ setComments(prev => {
   }, [busId]);
 return (
   <div className="comments-section mt-4 pt-4">
-    <h3 className="comments-title">Comments</h3>
+    <h3 className="comments-title">Live Updates</h3>
     {/* Desktop/table layout */}
     <div className="show-desktop">
       <form onSubmit={handleSubmit} className="flex mb-4 gap-2">
         <textarea
           className="comment-input"
           rows="2"
-          placeholder="Add your comment..."
+          placeholder="Add a passenger update..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
         />
@@ -153,7 +153,7 @@ return (
             </div>
           ))
         ) : (
-          <p className="no-comments">No comments yet.</p>
+          <p className="no-comments">No updates yet.</p>
         )}
       </div>
     </div>
@@ -163,7 +163,7 @@ return (
         <textarea
           className="comment-input"
           rows="2"
-          placeholder="Add your comment..."
+          placeholder="Add a passeneger update..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
         />
@@ -199,7 +199,7 @@ return (
             </div>
           ))
         ) : (
-          <p className="no-comments">No comments yet.</p>
+          <p className="no-comments">No updates yet.</p>
         )}
       </div>
     </div>
