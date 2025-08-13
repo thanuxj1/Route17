@@ -4,9 +4,10 @@ from datetime import time
 
 class BusTimeBase(BaseModel):
     bus_number: str
-    arrival_time: time  # ✅ Use time type directly
+    arrival_time: time
     destination: str
-    status: str   # ✅ Added here
+    status: str = "On Time"  # default value
+
 
     @field_validator("arrival_time", mode="before")
     def validate_arrival_time(cls, v):
