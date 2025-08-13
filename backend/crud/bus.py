@@ -23,7 +23,7 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
             "bus_number": new_bus.bus_number,
             "arrival_time": new_bus.arrival_time.strftime("%H:%M:%S"),  # ✅ return as string
             "destination": new_bus.destination,
-            "status": new_bus.status
+            "status": bus.status or "On Time" 
             
         }
     except Exception as e:
