@@ -6,8 +6,9 @@ const BASE_URL = "https://route17-production.up.railway.app";
 // Create a reusable Axios instance
 const API = axios.create({
   baseURL: BASE_URL,
-  timeout: 5000, // 5 seconds timeout
+  timeout: 15000, // 15 seconds
 });
+
 
 // Cache configuration
 const CACHE_KEY = "busTimes";
