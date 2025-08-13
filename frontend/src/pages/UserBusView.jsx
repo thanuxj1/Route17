@@ -124,7 +124,7 @@ function UserBusView() {
             <div className="bus-card" key={bus.id}>
               <div className="flex justify-between items-center">
                 <div>
-                  <div>
+                  <div>bus_number
                     <strong>Bus:</strong> {bus.bus_number}
                   </div>
                   <div>
