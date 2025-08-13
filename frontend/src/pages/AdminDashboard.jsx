@@ -16,10 +16,11 @@ function Dashboard() {
   const [comments, setComments] = useState({});
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
-    bus_number: "",
-    arrival_time: "",
-    destination: "",
-  });
+  bus_number: "",
+  arrival_time: "",
+  destination: "",
+  status: "" // ✅ Add here
+});
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
@@ -40,25 +41,26 @@ function Dashboard() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (editId) {
-      await updateBusTime(editId, form);
-    } else {
-      await addBusTime(form);
-    }
-    setForm({ bus_number: "", arrival_time: "", destination: "" });
-    setEditId(null);
-    fetchBusTimes();
-  };
+  e.preventDefault();
+  if (editId) {
+    await updateBusTime(editId, form);
+  } else {
+    await addBusTime(form);
+  }
+  setForm({ bus_number: "", arrival_time: "", destination: "", status: "" }); // ✅ Reset status too
+  setEditId(null);
+  fetchBusTimes();
+};
 
-  const handleEdit = (bus) => {
-    setForm({
-      bus_number: bus.bus_number ?? "",
-      arrival_time: bus.arrival_time ?? "",
-      destination: bus.destination ?? "",
-    });
-    setEditId(bus.id);
-  };
+const handleEdit = (bus) => {
+  setForm({
+    bus_number: bus.bus_number ?? "",
+    arrival_time: bus.arrival_time ?? "",
+    destination: bus.destination ?? "",
+    status: bus.status ?? "" // ✅ Populate from backend
+  });
+  setEditId(bus.id);
+};
 
   const handleDelete = async (id) => {
     await deleteBusTime(id);
@@ -117,6 +119,15 @@ function Dashboard() {
           required
           className="form-input"
         />
+        <input
+  type="text"
+  placeholder="Status"
+  value={form.status}
+  onChange={(e) => setForm({ ...form, status: e.target.value })}
+  required
+  className="form-input"
+/>
+
 
         <button type="submit" className="add-button">
           {editId ? "Update" : "Add"} Bus
@@ -136,6 +147,11 @@ function Dashboard() {
                 <span className="bus-label">Arrival:</span>
                 <span className="bus-value">{bus.arrival_time}</span>
               </p>
+              <p className="bus-detail">
+  <span className="bus-label">Status:</span>
+  <span className="bus-value">{bus.status}</span>
+</p>
+
             </div>
 
             <div className="bus-actions">

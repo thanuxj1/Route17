@@ -10,7 +10,8 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
         new_bus = BusTime(
             bus_number=bus.bus_number,
             arrival_time=bus.arrival_time,  # ✅ already a time object
-            destination=bus.destination
+            destination=bus.destination,
+            status=bus.status
         )
 
         db.add(new_bus)
@@ -21,7 +22,8 @@ def create_bus_time(db: Session, bus: BusTimeCreate):
             "id": new_bus.id,
             "bus_number": new_bus.bus_number,
             "arrival_time": new_bus.arrival_time.strftime("%H:%M:%S"),  # ✅ return as string
-            "destination": new_bus.destination
+            "destination": new_bus.destination,
+            "status":bus.status
         }
     except Exception as e:
         db.rollback()
@@ -36,7 +38,8 @@ def get_all_bus_times(db: Session):
             "id": bus.id,
             "bus_number": bus.bus_number,
             "arrival_time": bus.arrival_time.strftime("%H:%M:%S"),
-            "destination": bus.destination
+            "destination": bus.destination,
+            "status": bus.status
         }
         for bus in buses
     ]

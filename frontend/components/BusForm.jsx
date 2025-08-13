@@ -4,19 +4,20 @@ const BusForm = ({ onSubmit, editData }) => {
   const [formData, setFormData] = useState({
     bus_number: "",
     arrival_time: "10:00", // Default time
-    destination: ""
+    destination: "",
+    status: "" 
   });
 
   useEffect(() => {
-  if (editData) {
-    setFormData({
-      bus_number: editData.bus_number ?? "",
-      arrival_time: (editData.arrival_time ?? "10:00").slice(0, 5),
-      destination: editData.destination ?? ""
-    });
-  }
-}, [editData]);
-
+    if (editData) {
+      setFormData({
+        bus_number: editData.bus_number ?? "",
+        arrival_time: (editData.arrival_time ?? "10:00").slice(0, 5),
+        destination: editData.destination ?? "",
+        status: editData.status ?? ""  // ✅ fix: was bus.status (undefined)
+      });
+    }
+  }, [editData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +30,8 @@ const BusForm = ({ onSubmit, editData }) => {
     const payload = {
       bus_number: formData.bus_number.trim(),
       arrival_time: formattedTime,
-      destination: formData.destination.trim()
+      destination: formData.destination.trim(),
+      status: formData.status.trim()   // ✅ include status in payload
     };
 
     console.log("Submitting payload:", payload);
@@ -62,6 +64,15 @@ const BusForm = ({ onSubmit, editData }) => {
         value={formData.destination}
         onChange={(e) =>
           setFormData({ ...formData, destination: e.target.value })
+        }
+        required
+      />
+      <input
+        type="text"
+        placeholder="Status"
+        value={formData.status}
+        onChange={(e) =>
+          setFormData({ ...formData, status: e.target.value })
         }
         required
       />

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { getBusTimes } from "../../api/busApi"
 import CommentSection from "./CommentSection"
-import LoadingSpinner from "../../components/LoadingSpinner" // import your spinner
+import LoadingSpinner from "../../components/LoadingSpinner"
 import "./UserBusView.css"
 
 function formatTime24to12(time24) {
@@ -19,7 +19,7 @@ function formatTime24to12(time24) {
 function UserBusView() {
   const [busTimes, setBusTimes] = useState([])
   const [openTab, setOpenTab] = useState(null)
-  const [loading, setLoading] = useState(true) // track loading state
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchBusTimes()
@@ -32,8 +32,7 @@ function UserBusView() {
     } catch (err) {
       console.error("Failed to fetch bus times:", err)
     } finally {
-      // Add a slight delay so spinner doesn't flash too fast
-      setTimeout(() => setLoading(false), 800) 
+      setTimeout(() => setLoading(false), 800)
     }
   }
 
@@ -47,13 +46,27 @@ function UserBusView() {
 
   return (
     <div className="user-bus-view">
-      {/* Header Section */}
+      {/* Header Section with Animated Background */}
       <div className="bus-header">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="text-center">
-            <h1 className="header-title">ROUTE 17 BUS SCHEDULE</h1>
-            <div className="header-subtitle">DEPARTURES • FROM SLIIT BUS STOP</div>
+        <div className="header-animation-container">
+          <div className="animated-bg-gradient"></div>
+          <div className="floating-particles">
+            <div className="particle particle-1"></div>
+            <div className="particle particle-2"></div>
+            <div className="particle particle-3"></div>
+            <div className="particle particle-4"></div>
+            <div className="particle particle-5"></div>
+            <div className="particle particle-6"></div>
           </div>
+          <div className="moving-lines">
+            <div className="line line-1"></div>
+            <div className="line line-2"></div>
+            <div className="line line-3"></div>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 py-2 text-center relative z-10">
+          <h1 className="header-title">ROUTE 17 BUS SCHEDULE</h1>
+          <div className="header-subtitle">DEPARTURES • FROM SLIIT BUS STOP</div>
         </div>
       </div>
 
@@ -75,31 +88,23 @@ function UserBusView() {
           <div className="divide-y divide-amber-800">
             {busTimes.map((bus) => (
               <div key={bus.id}>
-                <button
-                  onClick={() => toggleTab(bus.id)}
-                  className="bus-item w-full text-left px-6 py-4"
-                >
+                <button onClick={() => toggleTab(bus.id)} className="bus-item w-full text-left px-6 py-4">
                   <div className="grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-2">
                       <span className="bus-number">{bus.bus_number}</span>
                     </div>
                     <div className="col-span-4">
-                      <span className="bus-destination">
-                        {bus.destination.toUpperCase()}
-                      </span>
+                      <span className="bus-destination">{bus.destination.toUpperCase()}</span>
                     </div>
                     <div className="col-span-3">
-                      <span className="bus-time">
-                        {formatTime24to12(bus.arrival_time)}
-                      </span>
+                      <span className="bus-time">{formatTime24to12(bus.arrival_time)}</span>
                     </div>
                     <div className="col-span-2">
-                      <span className="bus-status">ON TIME</span>
+                      <span className="bus-status">{bus.status}</span>
+
                     </div>
                     <div className="col-span-1 text-right">
-                      <span className="expand-icon">
-                        {openTab === bus.id ? "▲" : "▼"}
-                      </span>
+                      <span className="expand-icon">{openTab === bus.id ? "▲" : "▼"}</span>
                     </div>
                   </div>
                 </button>
@@ -119,10 +124,19 @@ function UserBusView() {
             <div className="bus-card" key={bus.id}>
               <div className="flex justify-between items-center">
                 <div>
-                  <div><strong>Bus:</strong> {bus.bus_number}</div>
-                  <div><strong>Destination:</strong> {bus.destination}</div>
-                  <div><strong>Departure:</strong> {formatTime24to12(bus.arrival_time)}</div>
-                  <div><strong>Status:</strong> ON TIME</div>
+                  <div>
+                    <strong>Bus:</strong> {bus.bus_number}
+                  </div>
+                  <div>
+                    <strong>Destination:</strong> {bus.destination}
+                  </div>
+                  <div>
+                    <strong>Departure:</strong> {formatTime24to12(bus.arrival_time)}
+                  </div>
+                  <div>
+                    <strong>Status:</strong> {bus.status}
+
+                  </div>
                 </div>
                 <button
                   onClick={() => toggleTab(bus.id)}
@@ -141,17 +155,14 @@ function UserBusView() {
           ))}
         </div>
 
-       {/* Footer Info */}
-<footer className="footer">
-  <div className="footer-border">
-    REAL-TIME DEPARTURE INFORMATION • SLIIT CAMPUS TRANSPORT SYSTEM
-  </div>
-  <div className="footer-legal">
-    © {new Date().getFullYear()} Route No 17 SLIIT Campus Bus Schedule System. All rights reserved.  
-    Unauthorized copying, reproduction, or distribution of this information is strictly prohibited.
-  </div>
-</footer>
-
+        {/* Footer Info */}
+        <footer className="footer">
+          <div className="footer-border">REAL-TIME DEPARTURE INFORMATION • SLIIT CAMPUS TRANSPORT SYSTEM</div>
+          <div className="footer-legal">
+            © {new Date().getFullYear()} Route No 17 SLIIT Campus Bus Schedule System. All rights reserved. Unauthorized
+            copying, reproduction, or distribution of this information is strictly prohibited.
+          </div>
+        </footer>
       </div>
     </div>
   )
