@@ -10,4 +10,4 @@ class BusTime(Base):
     bus_number = Column(String(255), nullable=False)
     arrival_time = Column(Time, nullable=False)
     destination = Column(String(255), nullable=False)
-    status = Column(String(50), default="On Time")  # Added status field
+    status = Column(String(50), nullable=False)  # Added status field
