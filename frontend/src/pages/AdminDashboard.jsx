@@ -184,7 +184,8 @@ const handleEdit = (bus) => {
             <span className="bus-label">Arrival:</span>
             <span
               className="bus-value"
-              style={{ color: isChecked ? "red" : "inherit" }}
+              style={{ color: isChecked ? "red" : "#f59e42" }} // bus-number example
+
             >
               {bus.arrival_time}
             </span>
@@ -194,7 +195,8 @@ const handleEdit = (bus) => {
             <span className="bus-label">Status:</span>
             <span
               className="bus-value"
-              style={{ color: isChecked ? "red" : "inherit" }}
+              style={{ color: isChecked ? "red" : "#f59e42" }} // bus-number example
+
             >
               {bus.status}
             </span>
