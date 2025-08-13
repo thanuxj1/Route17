@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from pydantic import BaseModel, field_validator
 from datetime import time
 
@@ -32,14 +32,16 @@ class BusTimeCreate(BusTimeBase):
 
 
 class BusTimeUpdate(BaseModel):
-    bus_number: Optional[str]
-    arrival_time: Optional[time]
-    destination: Optional[str]
-    status: Optional[str]
-    checked: Optional[bool]
+    bus_number: Optional[str] = None
+    arrival_time: Optional[Union[time, str]] = None
+    destination: Optional[str] = None
+    status: Optional[str] = None
+    checked: Optional[bool] = None
 
     @field_validator("arrival_time", mode="before")
     def validate_arrival_time(cls, v):
+        if v is None or v == "":
+            return None
         if isinstance(v, time):
             return v
         if isinstance(v, str):
@@ -48,7 +50,7 @@ class BusTimeUpdate(BaseModel):
                 return time(parts[0], parts[1])
             elif len(parts) == 3:
                 return time(parts[0], parts[1], parts[2])
-        return v
+        raise ValueError("Time must be in HH:MM or HH:MM:SS format")
 
 class BusTimeResponse(BusTimeBase):
     id: int

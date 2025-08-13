@@ -27,17 +27,18 @@ function Dashboard() {
   useEffect(() => {
     fetchBusTimes();
   }, []);
- const handleCheckboxChange = async (busId, checked) => {
+const handleCheckboxChange = async (busId, checked) => {
   try {
-    await updateBusTime(busId, { checked }); // ✅ only send checked
-    setCheckedBuses(prev => ({ ...prev, [busId]: checked }));
+    await updateBusTime(busId, { checked }); // send only the updated field
+    setCheckedBuses((prev) => ({ ...prev, [busId]: checked }));
     setBusTimes(prev =>
       prev.map(bus => bus.id === busId ? { ...bus, checked } : bus)
     );
   } catch (err) {
-    console.error("❌ Update bus time failed:", err.response?.data || err);
+    console.error(err);
   }
 };
+
 
 
 
