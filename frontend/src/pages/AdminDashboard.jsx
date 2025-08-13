@@ -29,8 +29,10 @@ function Dashboard() {
   }, []);
 const handleCheckboxChange = async (busId, checked) => {
   try {
-    await updateBusTime(busId, { checked }); // send only the updated field
-    setCheckedBuses((prev) => ({ ...prev, [busId]: checked }));
+    // update backend field
+    await updateBusTime(busId, { checked });
+    
+    // update local state
     setBusTimes(prev =>
       prev.map(bus => bus.id === busId ? { ...bus, checked } : bus)
     );

@@ -26,15 +26,15 @@ function UserBusView() {
   }, [])
 
   const fetchBusTimes = async () => {
-    try {
-      const data = await getBusTimes()
-      setBusTimes(data)
-    } catch (err) {
-      console.error("Failed to fetch bus times:", err)
-    } finally {
-      setTimeout(() => setLoading(false), 800)
-    }
+  try {
+    const data = await getBusTimes();
+    setBusTimes(data); // data.checked will be true/false from DB
+  } catch (err) {
+    console.error("Failed to fetch bus times:", err);
+  } finally {
+    setLoading(false);
   }
+};
 
   const toggleTab = (id) => {
     setOpenTab(openTab === id ? null : id)
@@ -88,26 +88,39 @@ function UserBusView() {
           <div className="divide-y divide-amber-800">
             {busTimes.map((bus) => (
               <div key={bus.id}>
-                <button onClick={() => toggleTab(bus.id)} className="bus-item w-full text-left px-6 py-4">
-                  <div className="grid grid-cols-12 gap-4 items-center">
-                    <div className="col-span-2">
-                      <span className="bus-number">{bus.bus_number}</span>
-                    </div>
-                    <div className="col-span-4">
-                      <span className="bus-destination">{bus.destination.toUpperCase()}</span>
-                    </div>
-                    <div className="col-span-3">
-                      <span className="bus-time">{formatTime24to12(bus.arrival_time)}</span>
-                    </div>
-                    <div className="col-span-2">
-                      <span className="bus-status">{bus.status}</span>
+                <div
+  className={`bus-item w-full text-left px-6 py-4 ${bus.checked ? 'bus-alert' : ''}`}
+  onClick={() => toggleTab(bus.id)}
+>
+  <div className="grid grid-cols-12 gap-4 items-center">
+    <div className="col-span-2">
+      <span className="bus-number">{bus.bus_number}</span>
+    </div>
+    <div className="col-span-4">
+      <span className="bus-destination">{bus.destination.toUpperCase()}</span>
+    </div>
+    <div className="col-span-3">
+      <span
+        className="bus-time"
+        style={{ color: bus.checked ? 'red' : '#34d399' }}
+      >
+        {formatTime24to12(bus.arrival_time)}
+      </span>
+    </div>
+    <div className="col-span-2">
+      <span
+        className="bus-status"
+        style={{ color: bus.checked ? 'red' : '#34d399' }}
+      >
+        {bus.status}
+      </span>
+    </div>
+    <div className="col-span-1 text-right">
+      <span className="expand-icon">{openTab === bus.id ? "▲" : "▼"}</span>
+    </div>
+  </div>
+</div>
 
-                    </div>
-                    <div className="col-span-1 text-right">
-                      <span className="expand-icon">{openTab === bus.id ? "▲" : "▼"}</span>
-                    </div>
-                  </div>
-                </button>
                 {openTab === bus.id && (
                   <div className="comments-section px-6 py-6">
                     <CommentSection busId={bus.id} />
