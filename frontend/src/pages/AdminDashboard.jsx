@@ -27,10 +27,10 @@ function Dashboard() {
   useEffect(() => {
     fetchBusTimes();
   }, []);
-  const handleCheckboxChange = async (busId, checked) => {
+ const handleCheckboxChange = async (busId, checked) => {
   try {
     // update backend if needed
-    await updateBusTime(busId, { status: checked ? "Inactive" : "Active" }); // optional
+    await updateBusTime(busId, { status: checked ? "Inactive" : "Active" }); // ❌ only sending status
     setCheckedBuses((prev) => ({
       ...prev,
       [busId]: checked,
