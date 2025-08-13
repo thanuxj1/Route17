@@ -9,6 +9,7 @@ class BusTimeBase(BaseModel):
     status: str
     checked: bool = False  # ✅ default false
 
+
     @field_validator("arrival_time", mode="before")
     def validate_arrival_time(cls, v):
         if isinstance(v, time):
@@ -24,6 +25,8 @@ class BusTimeBase(BaseModel):
                 pass
         raise ValueError("Time must be in HH:MM or HH:MM:SS format")
 
+
+    
 class BusTimeCreate(BusTimeBase):
     pass
 
@@ -32,8 +35,26 @@ class BusTimeUpdate(BusTimeBase):
 
 class BusTimeResponse(BusTimeBase):
     id: int
+    class Config:
+        from_attributes = True
 
-    # ✅ Correct v2 syntax
+
+#this is comment section realted only 
+
+class CommentCreate(BaseModel):
+    content: str
+    bus_id: int
+
+class CommentOut(BaseModel):
+    id: int
+    content: str
+    bus_id: int
+    total_votes: int = 0
+    user_vote: int = 0
+
     model_config = {
         "from_attributes": True
     }
+
+class VoteCreate(BaseModel):
+    comment_id: int
