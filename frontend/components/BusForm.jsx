@@ -3,9 +3,10 @@ import React, { useState, useEffect } from "react";
 const BusForm = ({ onSubmit, editData }) => {
   const [formData, setFormData] = useState({
     bus_number: "",
-    arrival_time: "10:00", // Default time
+    arrival_time: "10:00",
     destination: "",
-    status: "" 
+    status: "",
+    checked: false, // ✅ Add checked to state
   });
 
   useEffect(() => {
@@ -14,7 +15,8 @@ const BusForm = ({ onSubmit, editData }) => {
         bus_number: editData.bus_number ?? "",
         arrival_time: (editData.arrival_time ?? "10:00").slice(0, 5),
         destination: editData.destination ?? "",
-        status: editData.status ?? ""  // ✅ fix: was bus.status (undefined)
+        status: editData.status ?? "",
+        checked: editData.checked ?? false, // ✅ populate when editing
       });
     }
   }, [editData]);
@@ -31,7 +33,8 @@ const BusForm = ({ onSubmit, editData }) => {
       bus_number: formData.bus_number.trim(),
       arrival_time: formattedTime,
       destination: formData.destination.trim(),
-      status: formData.status.trim()   // ✅ include status in payload
+      status: formData.status.trim(),
+      checked: formData.checked, // ✅ include checked in payload
     };
 
     console.log("Submitting payload:", payload);
@@ -76,13 +79,19 @@ const BusForm = ({ onSubmit, editData }) => {
         }
         required
       />
-      <input
-  type="checkbox"
-  checked={isChecked}
-  onChange={() => handleCheckboxChange(bus.id, !isChecked)} // send new value
-  style={{ marginRight: "8px" }}
-/>
 
+      {/* ✅ Checkbox now bound to formData.checked */}
+      <label>
+        <input
+          type="checkbox"
+          checked={formData.checked}
+          onChange={(e) =>
+            setFormData({ ...formData, checked: e.target.checked })
+          }
+          style={{ marginRight: "8px" }}
+        />
+        Mark as Checked
+      </label>
 
       <button type="submit">{editData ? "Update" : "Add"} Bus Time</button>
     </form>
