@@ -1,6 +1,5 @@
 import os
 from fastapi import FastAPI
-from routers import votes
 from database import engine
 from models import bus
 from routers import comments
@@ -23,7 +22,6 @@ bus.Base.metadata.create_all(bind=engine)
 
 app.include_router(bus_router.router, tags=["Bus"])
 app.include_router(comments.router, tags=["Comments"])
-app.include_router(votes.router)
 
 @app.get("/")
 def root():

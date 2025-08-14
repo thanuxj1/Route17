@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { getComments, createComment, submitVote } from "../../api/commentApi";
+import { getComments, createComment, deleteComment } from "../../api/commentApi";
 import "./UserBusView.css";
 
 export default function CommentSection({ busId }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [isVoting, setIsVoting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -37,29 +36,13 @@ export default function CommentSection({ busId }) {
     }
   };
 
-  const handleVote = async (commentId, voteType) => {
-    if (isVoting) return;
-    setIsVoting(true);
-    setError(null);
-
+  const handleDelete = async (commentId) => {
     try {
-      const comment = comments.find((c) => c.id === commentId);
-      const currentVote = comment?.user_vote || 0;
-      let newVoteValue = 0;
-
-      if (voteType === "up") {
-        newVoteValue = currentVote === 1 ? 0 : 1;
-      } else {
-        newVoteValue = currentVote === -1 ? 0 : -1;
-      }
-
-      await submitVote(commentId, 1, newVoteValue); // backend updates DB
-      await fetchComments(); // refetch total_votes from backend
+      await deleteComment(commentId);
+      await fetchComments();
     } catch (err) {
-      console.error("Vote failed:", err);
-      setError("Failed to register vote. Please try again.");
-    } finally {
-      setIsVoting(false);
+      console.error("Failed to delete comment", err);
+      setError("Failed to delete comment. Please try again.");
     }
   };
 
@@ -73,135 +56,45 @@ export default function CommentSection({ busId }) {
 
       {error && <div className="error-message">{error}</div>}
 
-      {/* Desktop/table layout */}
-      <div className="show-desktop">
-        <form onSubmit={handleSubmit} className="flex mb-4 gap-2">
-          <textarea
-            className="comment-input"
-            rows="2"
-            placeholder="Add a passenger update..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            className="post-button"
-            disabled={isLoading || !newComment.trim()}
-          >
-            {isLoading ? "Posting..." : "Post"}
-          </button>
-        </form>
+      <form onSubmit={handleSubmit} className="flex mb-4 gap-2">
+        <textarea
+          className="comment-input"
+          rows="2"
+          placeholder="Add a passenger update..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          disabled={isLoading}
+        />
+        <button
+          type="submit"
+          className="post-button"
+          disabled={isLoading || !newComment.trim()}
+        >
+          {isLoading ? "Posting..." : "Post"}
+        </button>
+      </form>
 
-        {isLoading ? (
-          <div className="loading-comments">Loading comments...</div>
-        ) : comments.length > 0 ? (
-          <div className="comments-container">
-            {comments.map((comment) => (
-              <div key={comment.id} className="comment-item">
-                <p className="comment-content">{comment.content}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <div className="flex items-center gap-2">
-                    <button
-                      className={`vote-btn ${
-                        comment.user_vote === 1 ? "upvoted" : ""
-                      }`}
-                      onClick={() => handleVote(comment.id, "up")}
-                      disabled={isVoting}
-                      aria-label="Upvote"
-                    >
-                      ▲
-                    </button>
-                    <span className="vote-count">
-                      {comment.total_votes || 0}
-                    </span>
-                    <button
-                      className={`vote-btn ${
-                        comment.user_vote === -1 ? "downvoted" : ""
-                      }`}
-                      onClick={() => handleVote(comment.id, "down")}
-                      disabled={isVoting}
-                      aria-label="Downvote"
-                    >
-                      ▼
-                    </button>
-                  </div>
-                  <span className="comment-id">#{comment.id}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-comments">
-            No updates yet. Be the first to comment!
-          </p>
-        )}
-      </div>
-
-      {/* Mobile/card layout */}
-      <div className="show-mobile">
-        <form onSubmit={handleSubmit} className="flex flex-col mb-4 gap-2">
-          <textarea
-            className="comment-input"
-            rows="2"
-            placeholder="Add a passenger update..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            className="post-button"
-            disabled={isLoading || !newComment.trim()}
-          >
-            {isLoading ? "Posting..." : "Post"}
-          </button>
-        </form>
-
-        {isLoading ? (
-          <div className="loading-comments">Loading comments...</div>
-        ) : comments.length > 0 ? (
-          <div className="comments-container">
-            {comments.map((comment) => (
-              <div key={comment.id} className="comment-item mobile-comment">
-                <p className="comment-content">{comment.content}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <div className="flex items-center gap-2">
-                    <button
-                      className={`vote-btn ${
-                        comment.user_vote === 1 ? "upvoted" : ""
-                      }`}
-                      onClick={() => handleVote(comment.id, "up")}
-                      disabled={isVoting}
-                      aria-label="Upvote"
-                    >
-                      ▲
-                    </button>
-                    <span className="vote-count">
-                      {comment.total_votes || 0}
-                    </span>
-                    <button
-                      className={`vote-btn ${
-                        comment.user_vote === -1 ? "downvoted" : ""
-                      }`}
-                      onClick={() => handleVote(comment.id, "down")}
-                      disabled={isVoting}
-                      aria-label="Downvote"
-                    >
-                      ▼
-                    </button>
-                  </div>
-                  <span className="comment-id">#{comment.id}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-comments">
-            No updates yet. Be the first to comment!
-          </p>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="loading-comments">Loading comments...</div>
+      ) : comments.length > 0 ? (
+        <div className="comments-container">
+          {comments.map((comment) => (
+            <div key={comment.id} className="comment-item">
+              <p className="comment-content">{comment.content}</p>
+              <button
+                className="delete-button"
+                onClick={() => handleDelete(comment.id)}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="no-comments">
+          No updates yet. Be the first to comment!
+        </p>
+      )}
     </div>
   );
 }

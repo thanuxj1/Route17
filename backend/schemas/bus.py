@@ -2,6 +2,7 @@ from typing import Optional, Union
 from pydantic import BaseModel, field_validator, Field
 from datetime import time
 
+# Bus time models
 class BusTimeBase(BaseModel):
     bus_number: str
     arrival_time: time
@@ -58,7 +59,7 @@ class BusTimeResponse(BusTimeBase):
     class Config:
         from_attributes = True
 
-# Comment section models remain unchanged
+# Comment models
 class CommentCreate(BaseModel):
     content: str
     bus_id: int
@@ -67,12 +68,7 @@ class CommentOut(BaseModel):
     id: int
     content: str
     bus_id: int
-    total_votes: int = 0
-    user_vote: int = 0
 
     model_config = {
         "from_attributes": True
     }
-
-class VoteCreate(BaseModel):
-    comment_id: int

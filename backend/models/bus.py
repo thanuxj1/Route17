@@ -1,5 +1,4 @@
 # models/bus.py
-
 from sqlalchemy import Column, Integer, String, Time, Boolean
 from database import Base
 

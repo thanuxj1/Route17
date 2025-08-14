@@ -556,36 +556,6 @@ html, body {
   margin-bottom: 0.5rem;
 }
 
-.vote-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.vote-btn.upvoted {
-  color: #10b981;
-}
-
-.vote-btn:not(.upvoted) {
-  color: #6b7280;
-}
-
-.vote-btn.downvoted {
-  color: #ef4444;
-}
-
-.vote-btn:not(.downvoted) {
-  color: #6b7280;
-}
-
-.vote-count {
-  color: #e2e8f0;
-  min-width: 1.5rem;
-  text-align: center;
-}
-
 .comment-id {
   color: #9ca3af;
   font-size: 0.75rem;
