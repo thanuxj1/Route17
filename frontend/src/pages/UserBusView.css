@@ -15,6 +15,181 @@
   background: linear-gradient(to right, #1a202c, #000);
   border-bottom: 2px solid #d97706;
   padding: 0.1rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.header-animation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.animated-bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(217, 119, 6, 0.1) 0%,
+    rgba(26, 32, 44, 0.8) 25%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(26, 32, 44, 0.8) 75%,
+    rgba(217, 119, 6, 0.1) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+
+.floating-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.particle {
+  position: absolute;
+  background: rgba(253, 230, 138, 0.6);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.particle-1 {
+  width: 4px;
+  height: 4px;
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 8s;
+}
+
+.particle-2 {
+  width: 6px;
+  height: 6px;
+  top: 60%;
+  left: 20%;
+  animation-delay: 1s;
+  animation-duration: 10s;
+}
+
+.particle-3 {
+  width: 3px;
+  height: 3px;
+  top: 30%;
+  left: 70%;
+  animation-delay: 2s;
+  animation-duration: 7s;
+}
+
+.particle-4 {
+  width: 5px;
+  height: 5px;
+  top: 70%;
+  left: 80%;
+  animation-delay: 3s;
+  animation-duration: 9s;
+}
+
+.particle-5 {
+  width: 4px;
+  height: 4px;
+  top: 40%;
+  left: 50%;
+  animation-delay: 4s;
+  animation-duration: 6s;
+}
+
+.particle-6 {
+  width: 3px;
+  height: 3px;
+  top: 80%;
+  left: 30%;
+  animation-delay: 5s;
+  animation-duration: 11s;
+}
+
+.moving-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.4), transparent);
+  height: 1px;
+  width: 100%;
+  animation: moveLine 4s linear infinite;
+}
+
+.line-1 {
+  top: 25%;
+  animation-delay: 0s;
+}
+
+.line-2 {
+  top: 50%;
+  animation-delay: 1.5s;
+}
+
+.line-3 {
+  top: 75%;
+  animation-delay: 3s;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-5px) translateX(-5px);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-15px) translateX(3px);
+    opacity: 0.9;
+  }
+}
+
+@keyframes moveLine {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 
 .header-title {
@@ -23,12 +198,16 @@
   letter-spacing: 0.1em;
   color: #fde68a;
   margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 10;
 }
 
 .header-subtitle {
   font-size: 1.25rem;
   color: #fbbf24;
   letter-spacing: 0.15em;
+  position: relative;
+  z-index: 10;
 }
 
 /* =========================
@@ -39,7 +218,7 @@
   border: 2px solid #d97706;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .column-header {
@@ -60,6 +239,7 @@
 ========================= */
 .bus-item {
   transition: background-color 0.2s;
+  cursor: pointer;
 }
 
 .bus-item:hover {
@@ -97,6 +277,7 @@
   color: #f59e42;
   font-size: 2rem;
   transition: color 0.2s;
+  cursor: pointer;
 }
 
 .bus-item:hover .expand-icon {
@@ -220,258 +401,16 @@
   line-height: 1.4;
 }
 
-
 /* =========================
    Responsive
 ========================= */
-.show-mobile { display: none; }
-.show-desktop { display: block; }
-
-@media (max-width: 640px) {
-  .show-mobile { display: block; }
-  .show-desktop { display: none; }
-
-  .bus-card {
-    background: #181c23;
-    color: #ffe082;
-    border: 1px solid #ffa726;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-
-  .expand-icon {
-    color: #ffe082;
-    cursor: pointer;
-  }
+.show-mobile {
+  display: none;
 }
-.bus-header {
-  background: linear-gradient(to right, #1a202c, #000);
-  border-bottom: 2px solid #d97706;
-  padding: 0.25rem 1.5rem; /* smaller padding */
+.show-desktop {
+  display: block;
 }
 
-.header-title {
-  font-size: 1.5rem; /* smaller than 2.25rem */
-  font-weight: bold;
-  letter-spacing: 0.05em;
-  color: #fde68a;
-  margin-bottom: 0.25rem;
-}
-
-.header-subtitle {
-  font-size: 0.875rem; /* smaller than 1.25rem */
-  color: #fbbf24;
-  letter-spacing: 0.1em;
-}
-/* =========================
-   Header
-========================= */
-.bus-header {
-  background: linear-gradient(to right, #1a202c, #000);
-  border-bottom: 2px solid #d97706;
-  padding: 0.1rem 1.5rem;
-  position: relative; /* Added for positioning animated elements */
-  overflow: hidden; /* Hide overflow for animations */
-}
-
-/* Added animated background container */
-.header-animation-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Added animated gradient background */
-.animated-bg-gradient {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    45deg,
-    rgba(217, 119, 6, 0.1) 0%,
-    rgba(26, 32, 44, 0.8) 25%,
-    rgba(0, 0, 0, 0.9) 50%,
-    rgba(26, 32, 44, 0.8) 75%,
-    rgba(217, 119, 6, 0.1) 100%
-  );
-  background-size: 400% 400%;
-  animation: gradientShift 8s ease-in-out infinite;
-}
-
-/* Added floating particles */
-.floating-particles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.particle {
-  position: absolute;
-  background: rgba(253, 230, 138, 0.6);
-  border-radius: 50%;
-  animation: float 6s ease-in-out infinite;
-}
-
-.particle-1 {
-  width: 4px;
-  height: 4px;
-  top: 20%;
-  left: 10%;
-  animation-delay: 0s;
-  animation-duration: 8s;
-}
-
-.particle-2 {
-  width: 6px;
-  height: 6px;
-  top: 60%;
-  left: 20%;
-  animation-delay: 1s;
-  animation-duration: 10s;
-}
-
-.particle-3 {
-  width: 3px;
-  height: 3px;
-  top: 30%;
-  left: 70%;
-  animation-delay: 2s;
-  animation-duration: 7s;
-}
-
-.particle-4 {
-  width: 5px;
-  height: 5px;
-  top: 70%;
-  left: 80%;
-  animation-delay: 3s;
-  animation-duration: 9s;
-}
-
-.particle-5 {
-  width: 4px;
-  height: 4px;
-  top: 40%;
-  left: 50%;
-  animation-delay: 4s;
-  animation-duration: 6s;
-}
-
-.particle-6 {
-  width: 3px;
-  height: 3px;
-  top: 80%;
-  left: 30%;
-  animation-delay: 5s;
-  animation-duration: 11s;
-}
-
-/* Added moving lines for tech effect */
-.moving-lines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.line {
-  position: absolute;
-  background: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.4), transparent);
-  height: 1px;
-  width: 100%;
-  animation: moveLine 4s linear infinite;
-}
-
-.line-1 {
-  top: 25%;
-  animation-delay: 0s;
-}
-
-.line-2 {
-  top: 50%;
-  animation-delay: 1.5s;
-}
-
-.line-3 {
-  top: 75%;
-  animation-delay: 3s;
-}
-
-/* Animation keyframes */
-@keyframes gradientShift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.6;
-  }
-  25% {
-    transform: translateY(-10px) translateX(5px);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-5px) translateX(-5px);
-    opacity: 0.8;
-  }
-  75% {
-    transform: translateY(-15px) translateX(3px);
-    opacity: 0.9;
-  }
-}
-
-@keyframes moveLine {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-.header-title {
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: 0.1em;
-  color: #fde68a;
-  margin-bottom: 0.5rem;
-  position: relative; /* Added for z-index layering */
-  z-index: 10;
-}
-
-.header-subtitle {
-  font-size: 1.25rem;
-  color: #fbbf24;
-  letter-spacing: 0.15em;
-  position: relative; /* Added for z-index layering */
-  z-index: 10;
-}
-
-/* Updated responsive styles for header animations */
 @media (max-width: 640px) {
   .show-mobile {
     display: block;
@@ -495,12 +434,10 @@
     letter-spacing: 0.1em;
   }
 
-  /* Scale down particles for mobile */
   .particle {
     transform: scale(0.7);
   }
 
-  /* Reduce animation intensity on mobile */
   .animated-bg-gradient {
     animation-duration: 12s;
   }
@@ -509,5 +446,18 @@
     animation-duration: 6s;
   }
 
-  /* ... existing mobile styles ... */
+  .bus-card {
+    background: #181c23;
+    color: #ffe082;
+    border: 1px solid #ffa726;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .expand-icon {
+    color: #ffe082;
+    cursor: pointer;
+  }
 }
