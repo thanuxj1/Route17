@@ -6,3 +6,4 @@ class Comment(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String(500), nullable=False)
     bus_id = Column(Integer, ForeignKey("bus_times.id"))
+
