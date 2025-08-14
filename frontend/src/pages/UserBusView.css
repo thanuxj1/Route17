@@ -1,11 +1,25 @@
 /* =========================
-   Main Container
+   Reset and Main Container
 ========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 .user-bus-view {
   min-height: 100vh;
   background-color: #000;
   color: #f59e42;
   font-family: monospace, monospace;
+  margin: 0;
+  padding: 0;
 }
 
 /* =========================
@@ -17,7 +31,7 @@
   padding: 0.1rem 1.5rem;
   position: relative;
   overflow: hidden;
-  margin-top: 0;
+  margin: 0;
 }
 
 .header-animation-container {

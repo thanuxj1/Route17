@@ -4,14 +4,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  position: fixed; /* Changed from relative to fixed */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000; /* Added high z-index to stay above content */
+  z-index: 1000;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(to right, #0f172a, #111827, #000); /* Added background for navbar */
-  border-bottom: 1px solid #d97706; /* Added border for separation */
+  background: linear-gradient(to right, #0f172a, #111827, #000);
+  border-bottom: 1px solid #d97706;
+  height: 64px; /* <CHANGE> Added explicit height for consistent spacing */
 }
 
 /* Logo */
@@ -30,7 +31,7 @@
   color: #f59e42;
   cursor: pointer;
   font-size: 1.5rem;
-  z-index: 1001; /* Higher z-index for hamburger */
+  z-index: 1001;
 }
 
 /* Navigation Links */
@@ -106,15 +107,78 @@
     gap: 1rem;
     border-top: 1px solid #d97706;
     display: none;
-    z-index: 999; /* High z-index for mobile menu */
+    z-index: 999;
   }
 
   .nav-links.open {
     display: flex;
   }
+
+  /* <CHANGE> Smaller navbar height on mobile */
+  .navbar-container {
+    height: 56px;
+  }
 }
 
-/* Body padding to account for fixed navbar */
+/* <CHANGE> Reset body margins and padding */
 body {
-  padding-top: 60px; /* Reduced from 80px to 60px to match navbar height */
+  margin: 0;
+  padding: 0;
+}
+
+/* <CHANGE> Conditional spacing - only when navbar exists */
+.has-navbar {
+  padding-top: 64px;
+}
+
+.has-navbar .user-bus-view,
+.has-navbar .main-content,
+.has-navbar .page-container {
+  margin-top: 0; /* Reset margin when using body padding */
+}
+
+/* <CHANGE> Alternative approach using CSS selector for pages with navbar */
+body:has(.navbar-container) {
+  padding-top: 64px;
+}
+
+body:has(.navbar-container) .user-bus-view,
+body:has(.navbar-container) .main-content,
+body:has(.navbar-container) .page-container {
+  margin-top: 0;
+}
+
+/* <CHANGE> Fallback for browsers that don't support :has() */
+.navbar-present {
+  padding-top: 64px;
+}
+
+.navbar-present .user-bus-view,
+.navbar-present .main-content,
+.navbar-present .page-container {
+  margin-top: 0;
+}
+
+/* <CHANGE> Mobile spacing adjustments */
+@media (max-width: 768px) {
+  .has-navbar,
+  body:has(.navbar-container),
+  .navbar-present {
+    padding-top: 56px;
+  }
+}
+
+/* <CHANGE> Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+body:has(.navbar-container) {
+  scroll-padding-top: 64px;
+}
+
+@media (max-width: 768px) {
+  body:has(.navbar-container) {
+    scroll-padding-top: 56px;
+  }
 }

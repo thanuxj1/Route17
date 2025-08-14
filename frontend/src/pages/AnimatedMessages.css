@@ -1,0 +1,151 @@
+.notification-container {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.notification {
+  /* Notification card styling with shadow and rounded corners */
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  max-width: 600px;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.notification::before {
+  /* Left accent border for notification type */
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent-color);
+}
+
+.notification.info {
+  --accent-color: #3b82f6;
+  border-left-color: #3b82f6;
+}
+
+.notification.warning {
+  --accent-color: #f59e0b;
+  border-left-color: #f59e0b;
+}
+
+.notification-icon {
+  /* Icon styling for notification */
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-text {
+  /* Clean notification text styling */
+  color: #374151;
+  font-size: 0.875rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.notification-close {
+  /* Close button styling */
+  color: #9ca3af;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0.125rem;
+  border-radius: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.notification-close:hover {
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+.notification.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+.notification.hidden {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  filter: blur(1px);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .notification {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .notification-text {
+    color: #d1d5db;
+  }
+
+  .notification-close {
+    color: #6b7280;
+  }
+
+  .notification-close:hover {
+    color: #9ca3af;
+    background: #374151;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .notification-container {
+    padding: 0 1rem;
+    margin-top: 1rem;
+  }
+
+  .notification {
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .notification-text {
+    font-size: 0.8125rem;
+  }
+
+  .notification-icon {
+    font-size: 1.125rem;
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .notification {
+    padding: 0.95rem 1.125rem;
+  }
+
+  .notification-text {
+    font-size: 0.85rem;
+  }
+}
