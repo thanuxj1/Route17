@@ -43,18 +43,18 @@ export default function CommentSection({ busId }) {
     setError(null);
 
     try {
-      const comment = comments.find(c => c.id === commentId);
+      const comment = comments.find((c) => c.id === commentId);
       const currentVote = comment?.user_vote || 0;
       let newVoteValue = 0;
-      
+
       if (voteType === "up") {
         newVoteValue = currentVote === 1 ? 0 : 1;
       } else {
         newVoteValue = currentVote === -1 ? 0 : -1;
       }
 
-      await submitVote(commentId, 1, newVoteValue); // Using user_id = 1 for demo
-      await fetchComments();
+      await submitVote(commentId, 1, newVoteValue); // backend updates DB
+      await fetchComments(); // refetch total_votes from backend
     } catch (err) {
       console.error("Vote failed:", err);
       setError("Failed to register vote. Please try again.");
@@ -70,7 +70,7 @@ export default function CommentSection({ busId }) {
   return (
     <div className="comments-section mt-4 pt-4">
       <h3 className="comments-title">Live Updates</h3>
-      
+
       {error && <div className="error-message">{error}</div>}
 
       {/* Desktop/table layout */}
@@ -84,15 +84,15 @@ export default function CommentSection({ busId }) {
             onChange={(e) => setNewComment(e.target.value)}
             disabled={isLoading}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="post-button"
             disabled={isLoading || !newComment.trim()}
           >
             {isLoading ? "Posting..." : "Post"}
           </button>
         </form>
-        
+
         {isLoading ? (
           <div className="loading-comments">Loading comments...</div>
         ) : comments.length > 0 ? (
@@ -103,16 +103,22 @@ export default function CommentSection({ busId }) {
                 <div className="flex justify-between items-center mt-2">
                   <div className="flex items-center gap-2">
                     <button
-                      className={`vote-btn ${comment.user_vote === 1 ? 'upvoted' : ''}`}
+                      className={`vote-btn ${
+                        comment.user_vote === 1 ? "upvoted" : ""
+                      }`}
                       onClick={() => handleVote(comment.id, "up")}
                       disabled={isVoting}
                       aria-label="Upvote"
                     >
                       ▲
                     </button>
-                    <span className="vote-count">{comment.total_votes || 0}</span>
+                    <span className="vote-count">
+                      {comment.total_votes || 0}
+                    </span>
                     <button
-                      className={`vote-btn ${comment.user_vote === -1 ? 'downvoted' : ''}`}
+                      className={`vote-btn ${
+                        comment.user_vote === -1 ? "downvoted" : ""
+                      }`}
                       onClick={() => handleVote(comment.id, "down")}
                       disabled={isVoting}
                       aria-label="Downvote"
@@ -126,7 +132,9 @@ export default function CommentSection({ busId }) {
             ))}
           </div>
         ) : (
-          <p className="no-comments">No updates yet. Be the first to comment!</p>
+          <p className="no-comments">
+            No updates yet. Be the first to comment!
+          </p>
         )}
       </div>
 
@@ -141,8 +149,8 @@ export default function CommentSection({ busId }) {
             onChange={(e) => setNewComment(e.target.value)}
             disabled={isLoading}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="post-button"
             disabled={isLoading || !newComment.trim()}
           >
@@ -160,16 +168,22 @@ export default function CommentSection({ busId }) {
                 <div className="flex justify-between items-center mt-2">
                   <div className="flex items-center gap-2">
                     <button
-                      className={`vote-btn ${comment.user_vote === 1 ? 'upvoted' : ''}`}
+                      className={`vote-btn ${
+                        comment.user_vote === 1 ? "upvoted" : ""
+                      }`}
                       onClick={() => handleVote(comment.id, "up")}
                       disabled={isVoting}
                       aria-label="Upvote"
                     >
                       ▲
                     </button>
-                    <span className="vote-count">{comment.total_votes || 0}</span>
+                    <span className="vote-count">
+                      {comment.total_votes || 0}
+                    </span>
                     <button
-                      className={`vote-btn ${comment.user_vote === -1 ? 'downvoted' : ''}`}
+                      className={`vote-btn ${
+                        comment.user_vote === -1 ? "downvoted" : ""
+                      }`}
                       onClick={() => handleVote(comment.id, "down")}
                       disabled={isVoting}
                       aria-label="Downvote"
@@ -183,7 +197,9 @@ export default function CommentSection({ busId }) {
             ))}
           </div>
         ) : (
-          <p className="no-comments">No updates yet. Be the first to comment!</p>
+          <p className="no-comments">
+            No updates yet. Be the first to comment!
+          </p>
         )}
       </div>
     </div>
