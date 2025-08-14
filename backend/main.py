@@ -23,7 +23,7 @@ bus.Base.metadata.create_all(bind=engine)
 
 app.include_router(bus_router.router, tags=["Bus"])
 app.include_router(comments.router, tags=["Comments"])
-app.include_router(votes.router, prefix="/votes")
+app.include_router(votes.router)
 
 @app.get("/")
 def root():
