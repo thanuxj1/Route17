@@ -11,4 +11,5 @@ class BusTime(Base):
     arrival_time = Column(Time, nullable=False)
     destination = Column(String(255), nullable=False)
     status = Column(String(50), nullable=False, default="On Time")
-checked = Column(Boolean, nullable=False, default=False)
+    checked = Column(Boolean, nullable=False, default=False) 
+
