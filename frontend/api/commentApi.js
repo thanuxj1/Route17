@@ -5,17 +5,16 @@ const COMMENTS_URL = `${API_BASE}/comments`;
 const VOTES_URL = `${API_BASE}/votes`;
 
 /**
- * Get all comments for a specific bus with vote counts and user's vote status
- * @param {number} busId 
- * @param {number} userId 
- * @returns {Promise<Array>} Sorted comments by vote count (descending)
+ * Get comments for a specific bus with vote information
+ * @param {number} busId - ID of the bus
+ * @param {number} [userId=1] - ID of the current user
+ * @returns {Promise<Array>} Array of comment objects
  */
 export async function getComments(busId, userId = 1) {
   try {
     const { data } = await axios.get(`${COMMENTS_URL}/bus/${busId}`, {
       params: { user_id: userId }
     });
-    // Comments are already sorted by the backend by total_votes descending
     return data;
   } catch (err) {
     console.error("Error fetching comments:", err);
@@ -25,8 +24,10 @@ export async function getComments(busId, userId = 1) {
 
 /**
  * Create a new comment
- * @param {{content: string, busId: number}} commentData
- * @returns {Promise<Object>}
+ * @param {Object} commentData - Comment data
+ * @param {string} commentData.content - Comment text
+ * @param {number} commentData.busId - ID of the bus
+ * @returns {Promise<Object>} The created comment
  */
 export async function createComment({ content, busId }) {
   try {
@@ -42,26 +43,11 @@ export async function createComment({ content, busId }) {
 }
 
 /**
- * Delete a comment
- * @param {number} commentId
- * @returns {Promise<Object>}
- */
-export async function deleteComment(commentId) {
-  try {
-    const { data } = await axios.delete(`${COMMENTS_URL}/${commentId}`);
-    return data;
-  } catch (err) {
-    console.error("Error deleting comment:", err);
-    throw err;
-  }
-}
-
-/**
- * Submit or update a vote
- * @param {number} commentId
- * @param {number} userId
- * @param {number} value (1 for upvote, -1 for downvote, 0 to remove vote)
- * @returns {Promise<Object>}
+ * Submit a vote for a comment
+ * @param {number} commentId - ID of the comment
+ * @param {number} userId - ID of the user voting
+ * @param {number} value - Vote value (1 = upvote, -1 = downvote, 0 = remove vote)
+ * @returns {Promise<Object>} Vote result
  */
 export async function submitVote(commentId, userId, value) {
   try {
@@ -76,7 +62,6 @@ export async function submitVote(commentId, userId, value) {
     throw err;
   }
 }
-
 /**
  * Get vote details for a specific comment
  * @param {number} commentId
