@@ -90,8 +90,10 @@ function UserBusView() {
               <div key={bus.id}>
                 <div
   className={`bus-item w-full text-left px-6 py-4 ${bus.checked ? 'bus-alert' : ''}`}
+  style={{ opacity: bus.checked ? 0.5 : 1 }}
   onClick={() => toggleTab(bus.id)}
 >
+
   <div className="grid grid-cols-12 gap-4 items-center">
     <div className="col-span-2">
       <span className="bus-number">{bus.bus_number}</span>
