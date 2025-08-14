@@ -26,15 +26,15 @@ function UserBusView() {
   }, [])
 
   const fetchBusTimes = async () => {
-  try {
-    const data = await getBusTimes();
-    setBusTimes(data); // data.checked will be true/false from DB
-  } catch (err) {
-    console.error("Failed to fetch bus times:", err);
-  } finally {
-    setLoading(false);
+    try {
+      const data = await getBusTimes()
+      setBusTimes(data)
+    } catch (err) {
+      console.error("Failed to fetch bus times:", err)
+    } finally {
+      setLoading(false)
+    }
   }
-};
 
   const toggleTab = (id) => {
     setOpenTab(openTab === id ? null : id)
@@ -89,39 +89,38 @@ function UserBusView() {
             {busTimes.map((bus) => (
               <div key={bus.id}>
                 <div
-  className={`bus-item w-full text-left px-6 py-4 ${bus.checked ? 'bus-alert' : ''}`}
-  style={{ opacity: bus.checked ? 0.5 : 1 }}
-  onClick={() => toggleTab(bus.id)}
->
-
-  <div className="grid grid-cols-12 gap-4 items-center">
-    <div className="col-span-2">
-      <span className="bus-number">{bus.bus_number}</span>
-    </div>
-    <div className="col-span-4">
-      <span className="bus-destination">{bus.destination.toUpperCase()}</span>
-    </div>
-    <div className="col-span-3">
-      <span
-        className="bus-time"
-        style={{ color: bus.checked ? 'red' : '#34d399' }}
-      >
-        {formatTime24to12(bus.arrival_time)}
-      </span>
-    </div>
-    <div className="col-span-2">
-      <span
-        className="bus-status"
-        style={{ color: bus.checked ? 'red' : '#34d399' }}
-      >
-        {bus.status}
-      </span>
-    </div>
-    <div className="col-span-1 text-right">
-      <span className="expand-icon">{openTab === bus.id ? "▲" : "▼"}</span>
-    </div>
-  </div>
-</div>
+                  className={`bus-item w-full text-left px-6 py-4 ${bus.checked ? 'bus-alert' : ''}`}
+                  style={{ opacity: bus.checked ? 0.5 : 1 }}
+                  onClick={() => toggleTab(bus.id)}
+                >
+                  <div className="grid grid-cols-12 gap-4 items-center">
+                    <div className="col-span-2">
+                      <span className="bus-number">{bus.bus_number}</span>
+                    </div>
+                    <div className="col-span-4">
+                      <span className="bus-destination">{bus.destination.toUpperCase()}</span>
+                    </div>
+                    <div className="col-span-3">
+                      <span
+                        className="bus-time"
+                        style={{ color: bus.checked ? 'red' : '#34d399' }}
+                      >
+                        {formatTime24to12(bus.arrival_time)}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <span
+                        className="bus-status"
+                        style={{ color: bus.checked ? 'red' : '#34d399' }}
+                      >
+                        {bus.status}
+                      </span>
+                    </div>
+                    <div className="col-span-1 text-right">
+                      <span className="expand-icon">{openTab === bus.id ? "▲" : "▼"}</span>
+                    </div>
+                  </div>
+                </div>
 
                 {openTab === bus.id && (
                   <div className="comments-section px-6 py-6">
@@ -136,27 +135,41 @@ function UserBusView() {
         {/* Mobile/card layout */}
         <div className="show-mobile">
           {busTimes.map((bus) => (
-            <div className="bus-card" key={bus.id}>
+            <div 
+              className={`bus-card ${bus.checked ? 'bus-alert' : ''}`}
+              key={bus.id}
+              style={{ opacity: bus.checked ? 0.5 : 1 }}
+            >
               <div className="flex justify-between items-center">
                 <div>
                   <div>
-                    <strong>Bus:</strong> {bus.bus_number}
+                    <strong>Bus:</strong> <span style={{ color: bus.checked ? 'red' : 'inherit' }}>{bus.bus_number}</span>
                   </div>
                   <div>
                     <strong>Destination:</strong> {bus.destination}
                   </div>
                   <div>
-                    <strong>Departure:</strong> {formatTime24to12(bus.arrival_time)}
+                    <strong>Departure:</strong> 
+                    <span style={{ color: bus.checked ? 'red' : '#34d399' }}>
+                      {formatTime24to12(bus.arrival_time)}
+                    </span>
                   </div>
                   <div>
-                    <strong>Status:</strong> {bus.status}
-
+                    <strong>Status:</strong> 
+                    <span style={{ color: bus.checked ? 'red' : '#34d399' }}>
+                      {bus.status}
+                    </span>
                   </div>
                 </div>
                 <button
                   onClick={() => toggleTab(bus.id)}
                   className="expand-icon"
-                  style={{ fontSize: "1.5rem", background: "none", border: "none" }}
+                  style={{ 
+                    fontSize: "1.5rem", 
+                    background: "none", 
+                    border: "none",
+                    color: bus.checked ? 'red' : '#f59e42'
+                  }}
                 >
                   {openTab === bus.id ? "▲" : "▼"}
                 </button>

@@ -298,6 +298,11 @@ html, body {
   color: #fde68a;
 }
 
+/* Bus Alert State */
+.bus-alert {
+  transition: opacity 0.3s ease;
+}
+
 /* =========================
    Comments Section
 ========================= */
@@ -468,6 +473,14 @@ html, body {
     padding: 1rem;
     margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .bus-card.bus-alert {
+    opacity: 0.5;
+  }
+
+  .bus-card.bus-alert span {
+    color: red !important;
   }
 
   .expand-icon {

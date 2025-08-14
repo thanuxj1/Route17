@@ -11,28 +11,36 @@ from sqlalchemy import func
 
 router = APIRouter(prefix="/comments")
 
+@router.get("/bus/{bus_id}")
+async def get_comments(bus_id: int, user_id: int, db: Session = Depends(get_db)):
+    # Get comments with vote counts and user's vote
+    comments = db.query(
+        Comment,
+        func.coalesce(func.sum(Vote.value), 0).label('total_votes'),
+        func.coalesce(
+            db.query(Vote.value)
+            .filter(Vote.comment_id == Comment.id)
+            .filter(Vote.user_id == user_id)
+            .scalar_subquery(),
+            0
+        ).label('user_vote')
+    )\
+    .outerjoin(Vote, Vote.comment_id == Comment.id)\
+    .filter(Comment.bus_id == bus_id)\
+    .group_by(Comment.id)\
+    .order_by(func.coalesce(func.sum(Vote.value), 0).desc())\
+    .all()
 
-@router.get("/{bus_id}", response_model=List[CommentOut])
-def get_comments(bus_id: int, user_id: int = Query(...), db: Session = Depends(get_db)):
-    comments = db.query(Comment).filter(Comment.bus_id == bus_id).all()
-    results = []
-
-    for comment in comments:
-        total_votes = db.query(func.sum(Vote.value)).filter(Vote.comment_id == comment.id).scalar() or 0
-        user_vote = db.query(Vote).filter(
-            Vote.comment_id == comment.id,
-            Vote.user_id == user_id
-        ).first()
-
-        results.append(CommentOut(
-            id=comment.id,
-            content=comment.content,
-            bus_id=comment.bus_id,
-            total_votes=total_votes,
-            user_vote=user_vote.value if user_vote else 0
-        ))
-
-    return results
+    return [
+        {
+            "id": comment.id,
+            "content": comment.content,
+            "bus_id": comment.bus_id,
+            "total_votes": total_votes,
+            "user_vote": user_vote
+        }
+        for comment, total_votes, user_vote in comments
+    ]
 
 
 

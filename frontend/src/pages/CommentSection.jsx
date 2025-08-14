@@ -46,65 +46,33 @@ setUserVotes(initialVotes);
   };
 
   const handleVote = async (commentId, voteType) => {
-    if (isVoting) return;
-    setIsVoting(true);
+  if (isVoting) return;
+  setIsVoting(true);
 
-    try {
-      const currentVote = userVotes[commentId] || 0;
-      let newVoteValue = 0;
-      
-      if (voteType === "up") {
-        newVoteValue = currentVote === 1 ? 0 : 1;
-      } else {
-        newVoteValue = currentVote === -1 ? 0 : -1;
-      }
-
-      setUserVotes(prev => ({ ...prev, [commentId]: newVoteValue }));
-      
-      const voteDiff = newVoteValue - (currentVote || 0);
-      
-      // Update and sort comments
-      setComments(prev => {
-        const updated = prev.map(comment => 
-          comment.id === commentId
-            ? { ...comment, votes: (comment.votes || 0) + voteDiff }
-            : comment
-        );
-        return [...updated].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-      });
-
-      await axios.post("https://route17-production.up.railway.app/votes/", {
-  user_id: 1,  // use actual user ID in real app
-  comment_id: commentId,
-  value: newVoteValue
-});
-
-setComments(prev => {
-  const updated = prev.map(comment => {
-    if (comment.id === commentId) {
-      const voteDiff = newVoteValue - (userVotes[commentId] || 0);
-      return {
-        ...comment,
-        total_votes: (comment.total_votes || 0) + voteDiff,
-      };
+  try {
+    const currentVote = userVotes[commentId] || 0;
+    let newVoteValue = 0;
+    
+    if (voteType === "up") {
+      newVoteValue = currentVote === 1 ? 0 : 1;
+    } else {
+      newVoteValue = currentVote === -1 ? 0 : -1;
     }
-    return comment;
-  });
-  return [...updated].sort((a, b) => b.total_votes - a.total_votes);
-});
 
+    await axios.post("https://route17-production.up.railway.app/votes/", {
+      user_id: 1,  // use actual user ID
+      comment_id: commentId,
+      value: newVoteValue
+    });
 
-
-    } catch (error) {
-      console.error("Vote failed:", error);
-      // Revert on error
-      setComments(prev => [...prev].sort((a, b) => (b.votes || 0) - (a.votes || 0)));
-      setUserVotes(prev => prev);
-    } finally {
-      setIsVoting(false);
-    }
-  };
-
+    // Refresh comments to get updated data from server
+    await fetchComments();
+  } catch (error) {
+    console.error("Vote failed:", error);
+  } finally {
+    setIsVoting(false);
+  }
+};
   useEffect(() => {
     fetchComments();
   }, [busId]);
