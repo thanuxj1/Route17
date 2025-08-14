@@ -7,29 +7,35 @@ from models.comment import Comment
 from models.comment import Vote
 from database import get_db
 from sqlalchemy import func
-
+from sqlalchemy import select
 
 router = APIRouter(prefix="/comments")
 
+
+
 @router.get("/bus/{bus_id}")
 async def get_comments(bus_id: int, user_id: int, db: Session = Depends(get_db)):
-    # Get comments with vote counts and user's vote
-    comments = db.query(
-        Comment,
-        func.coalesce(func.sum(Vote.value), 0).label('total_votes'),
-        func.coalesce(
-            db.query(Vote.value)
-            .filter(Vote.comment_id == Comment.id)
-            .filter(Vote.user_id == user_id)
-            .scalar_subquery(),
-            0
-        ).label('user_vote')
-    )\
-    .outerjoin(Vote, Vote.comment_id == Comment.id)\
-    .filter(Comment.bus_id == bus_id)\
-    .group_by(Comment.id)\
-    .order_by(func.coalesce(func.sum(Vote.value), 0).desc())\
-    .all()
+    # Subquery for the current user's vote on each comment
+    user_vote_subq = (
+        select(Vote.value)
+        .where(Vote.comment_id == Comment.id)
+        .where(Vote.user_id == user_id)
+        .correlate(Comment)
+        .scalar_subquery()
+    )
+
+    comments = (
+        db.query(
+            Comment,
+            func.coalesce(func.sum(Vote.value), 0).label('total_votes'),
+            func.coalesce(user_vote_subq, 0).label('user_vote')
+        )
+        .outerjoin(Vote, Vote.comment_id == Comment.id)
+        .filter(Comment.bus_id == bus_id)
+        .group_by(Comment.id)
+        .order_by(func.coalesce(func.sum(Vote.value), 0).desc())
+        .all()
+    )
 
     return [
         {
@@ -41,7 +47,6 @@ async def get_comments(bus_id: int, user_id: int, db: Session = Depends(get_db))
         }
         for comment, total_votes, user_vote in comments
     ]
-
 
 
 @router.post("/", response_model=CommentOut)
