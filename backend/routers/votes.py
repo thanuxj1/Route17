@@ -4,8 +4,7 @@ from models.comment import Vote
 from schemas.bus import VoteCreate
 from database import get_db
 
-router = APIRouter(prefix="/votes")
-
+router = APIRouter()
 
 @router.post("/")
 def vote(vote: VoteCreate, db: Session = Depends(get_db)):
