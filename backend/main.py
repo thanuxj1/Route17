@@ -6,12 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Updated CORS for production
+# Fixed CORS configuration - NO TRAILING SLASHES
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://route17.vercel.app/",  # Your frontend URL
-        "http://localhost:5173",  # Local development
+        "https://route17.vercel.app",  # No trailing slash
+        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],  
@@ -28,6 +28,3 @@ def root():
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy", "database": "mongodb"}
-
-# Vercel serverless handler
-handler = app
