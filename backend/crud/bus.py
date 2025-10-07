@@ -1,52 +1,56 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
-from datetime import time
-from models.bus import BusTime
+from database import bus_times_collection
 from schemas.bus import BusTimeCreate, BusTimeUpdate
+from bson import ObjectId
+from datetime import datetime
 
-def create_bus_time(db: Session, bus: BusTimeCreate):
+def create_bus_time(bus: BusTimeCreate):
     try:
-        new_bus = BusTime(
-            bus_number=bus.bus_number,
-            arrival_time=bus.arrival_time,
-            destination=bus.destination,
-            status=bus.status,
-            checked=bus.checked if bus.checked is not None else False  # Ensure not None
-        )
-        db.add(new_bus)
-        db.commit()
-        db.refresh(new_bus)
-        return new_bus
+        bus_dict = {
+            "bus_number": bus.bus_number,
+            "arrival_time": str(bus.arrival_time),  # Convert time to string
+            "destination": bus.destination,
+            "status": bus.status,
+            "checked": bus.checked if bus.checked is not None else False
+        }
+        result = bus_times_collection.insert_one(bus_dict)
+        bus_dict["_id"] = result.inserted_id
+        return bus_dict
     except Exception as e:
-        db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-def get_all_bus_times(db: Session):
-    buses = db.query(BusTime).order_by(BusTime.arrival_time.asc()).all()
-    # The BusTimeResponse model will handle NULL to False conversion
+
+def get_all_bus_times():
+    buses = list(bus_times_collection.find())
+    # Sort by arrival_time
+    buses.sort(key=lambda x: x.get('arrival_time', ''))
     return buses
 
-def update_bus_time(db: Session, bus_id: int, bus: BusTimeUpdate):
-    bus_db = db.query(BusTime).filter(BusTime.id == bus_id).first()
-    if not bus_db:
+
+def update_bus_time(bus_id: str, bus: BusTimeUpdate):
+    if not ObjectId.is_valid(bus_id):
         return None
     
     update_data = bus.dict(exclude_unset=True)
+    
+    # Convert time to string if present
+    if 'arrival_time' in update_data and update_data['arrival_time'] is not None:
+        update_data['arrival_time'] = str(update_data['arrival_time'])
+    
     if 'checked' in update_data and update_data['checked'] is None:
-        update_data['checked'] = False  # Convert None to False
+        update_data['checked'] = False
     
-    for key, value in update_data.items():
-        setattr(bus_db, key, value)
-    
-    db.commit()
-    db.refresh(bus_db)
-    return bus_db
+    result = bus_times_collection.find_one_and_update(
+        {"_id": ObjectId(bus_id)},
+        {"$set": update_data},
+        return_document=True
+    )
+    return result
 
-def delete_bus_time(db: Session, bus_id: int):
-    bus_db = db.query(BusTime).filter(BusTime.id == bus_id).first()
-    if not bus_db:
+
+def delete_bus_time(bus_id: str):
+    if not ObjectId.is_valid(bus_id):
         return None
     
-    db.delete(bus_db)
-    db.commit()
-    return bus_db
+    result = bus_times_collection.find_one_and_delete({"_id": ObjectId(bus_id)})
+    return result

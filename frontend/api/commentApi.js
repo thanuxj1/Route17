@@ -1,36 +1,42 @@
 import axios from "axios";
 
-const API_BASE = "https://route17-production.up.railway.app";
-const COMMENTS_URL = `${API_BASE}/comments/`; // trailing slash
+const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000";
+const COMMENTS_URL = `${API_BASE}/comments/`;
 
-// Fetch all comments for a specific bus
 export async function getComments(busId) {
   try {
     const { data } = await axios.get(`${COMMENTS_URL}bus/${busId}`);
-    return data;
+    // MongoDB returns _id, normalize to id for frontend
+    return data.map(comment => ({
+      ...comment,
+      id: comment._id || comment.id,
+    }));
   } catch (err) {
     console.error("Error fetching comments:", err);
     return [];
   }
 }
 
-// Create a new comment
 export async function createComment({ content, busId }) {
   try {
     const { data } = await axios.post(COMMENTS_URL, { 
       content, 
-      bus_id: busId 
+      bus_id: busId // MongoDB backend expects bus_id
     });
-    return data;
+    // Normalize response
+    return {
+      ...data,
+      id: data._id || data.id,
+    };
   } catch (err) {
     console.error("Error posting comment:", err);
     throw err;
   }
 }
 
-// Delete a comment by ID
 export async function deleteComment(commentId) {
   try {
+    // MongoDB uses string IDs
     const { data } = await axios.delete(`${COMMENTS_URL}delete/${commentId}`);
     return data;
   } catch (err) {

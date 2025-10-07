@@ -1,35 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from models.comment import Comment
-from database import get_db
+from fastapi import APIRouter, HTTPException
+from database import comments_collection
 from schemas.bus import CommentCreate, CommentOut
+from bson import ObjectId
 
 router = APIRouter(prefix="/comments")
 
 
 @router.get("/bus/{bus_id}", response_model=list[CommentOut])
-def get_comments(bus_id: int, db: Session = Depends(get_db)):
-    comments = db.query(Comment).filter(Comment.bus_id == bus_id).all()
+def get_comments(bus_id: str):
+    comments = list(comments_collection.find({"bus_id": bus_id}))
     return comments
 
 
 @router.post("/", response_model=CommentOut)
-def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
-    new_comment = Comment(
-        content=comment.content,
-        bus_id=comment.bus_id
-    )
-    db.add(new_comment)
-    db.commit()
-    db.refresh(new_comment)
-    return new_comment
+def create_comment(comment: CommentCreate):
+    comment_dict = {
+        "content": comment.content,
+        "bus_id": comment.bus_id
+    }
+    result = comments_collection.insert_one(comment_dict)
+    comment_dict["_id"] = result.inserted_id
+    return comment_dict
 
 
 @router.delete("/delete/{comment_id}")
-def delete_comment(comment_id: int, db: Session = Depends(get_db)):
-    comment = db.query(Comment).filter(Comment.id == comment_id).first()
-    if not comment:
+def delete_comment(comment_id: str):
+    if not ObjectId.is_valid(comment_id):
+        return {"message": "Invalid comment ID"}
+    
+    result = comments_collection.find_one_and_delete({"_id": ObjectId(comment_id)})
+    if not result:
         return {"message": "Comment already deleted or not found"}
-    db.delete(comment)
-    db.commit()
+    
     return {"message": "Comment deleted successfully"}

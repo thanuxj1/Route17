@@ -1,30 +1,23 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import os
+from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
 # Load .env file
 load_dotenv()
 
-# 👉 Connection string to MySQL
-SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+# MongoDB connection string
+MONGODB_URI = os.getenv("MONGODB_URI")
 
+# Create MongoDB client
+client = MongoClient(MONGODB_URI)
 
-# 👉 SQLAlchemy engine
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# Get database
+db = client.get_database("bus_tracker")  # You can change the database name
 
-# 👉 SessionLocal will be used for DB sessions
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Collections
+bus_times_collection = db["bus_times"]
+comments_collection = db["comments"]
 
-# 👉 Base class for models
-Base = declarative_base()
-
-# ✅ Function to get DB session
+# Function to get database (for consistency with previous code)
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    return db
