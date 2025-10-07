@@ -3,20 +3,19 @@ from fastapi import FastAPI
 from routers import comments
 from routers import bus as bus_router
 from fastapi.middleware.cors import CORSMiddleware
-from mangum import Mangum
 
 app = FastAPI()
 
-# CORS configuration - NO TRAILING SLASHES
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://route17.vercel.app",  # Your frontend URL
-        "http://localhost:5173",  # Local development
+        "https://route17.vercel.app",
+        "http://localhost:5173",
     ],
     allow_credentials=True,
-    allow_methods=["*"],  
-    allow_headers=["*"],  
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(bus_router.router, tags=["Bus"])
@@ -30,5 +29,7 @@ def root():
 def health_check():
     return {"status": "healthy", "database": "mongodb"}
 
-# Vercel handler using Mangum
-handler = Mangum(app)
+# For local development only
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
