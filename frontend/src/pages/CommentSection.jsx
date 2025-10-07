@@ -1,126 +1,92 @@
-import { useEffect, useState } from "react";
-import { getComments, createComment } from "../../api/commentApi";
-import "./UserBusView.css";
+"use client"
+
+import { useEffect, useState } from "react"
+import { getComments, createComment } from "../../api/commentApi"
+import { Send } from "lucide-react"
 
 export default function CommentSection({ busId }) {
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState(null)
 
   const fetchComments = async () => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
     try {
-      const comments = await getComments(busId);
-      setComments(comments);
+      const comments = await getComments(busId)
+      setComments(comments)
     } catch (err) {
-      console.error("Failed to fetch comments", err);
-      setError("Failed to load comments. Please try again.");
+      console.error("Failed to fetch comments", err)
+      setError("Failed to load updates")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
+    e.preventDefault()
+    if (!newComment.trim()) return
 
+    setIsSubmitting(true)
     try {
-      await createComment({ content: newComment, busId });
-      setNewComment("");
-      await fetchComments();
+      await createComment({ content: newComment, busId })
+      setNewComment("")
+      await fetchComments()
     } catch (err) {
-      console.error("Failed to post comment", err);
-      setError("Failed to post comment. Please try again.");
+      console.error("Failed to post comment", err)
+      setError("Failed to post update")
+    } finally {
+      setIsSubmitting(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchComments();
-  }, [busId]);
+    fetchComments()
+  }, [busId])
 
   return (
-    <div className="comments-section mt-4 pt-4">
-      <h3 className="comments-title">Live Updates</h3>
-      
-      {error && <div className="error-message">{error}</div>}
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-white/90">Updates</h3>
 
-      {/* Desktop/table layout */}
-      <div className="show-desktop">
-        <form onSubmit={handleSubmit} className="flex mb-4 gap-2">
-          <textarea
-            className="comment-input"
-            rows="2"
-            placeholder="Add a passenger update..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            disabled={isLoading}
-          />
-          <button 
-            type="submit" 
-            className="post-button"
-            disabled={isLoading || !newComment.trim()}
-          >
-            {isLoading ? "Posting..." : "Post"}
-          </button>
-        </form>
-        
-        {isLoading ? (
-          <div className="loading-comments">Loading comments...</div>
-        ) : comments.length > 0 ? (
-          <div className="comments-container">
-            {comments.map((comment) => (
-              <div key={comment.id} className="comment-item">
-                <p className="comment-content">{comment.content}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="comment-id">#{comment.id}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-comments">No updates yet. Be the first to comment!</p>
-        )}
-      </div>
+      {error && (
+        <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">{error}</div>
+      )}
 
-      {/* Mobile/card layout */}
-      <div className="show-mobile">
-        <form onSubmit={handleSubmit} className="flex flex-col mb-4 gap-2">
-          <textarea
-            className="comment-input"
-            rows="2"
-            placeholder="Add a passenger update..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            disabled={isLoading}
-          />
-          <button 
-            type="submit" 
-            className="post-button"
-            disabled={isLoading || !newComment.trim()}
-          >
-            {isLoading ? "Posting..." : "Post"}
-          </button>
-        </form>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <textarea
+          className="w-full bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-4 py-3 text-white/90 placeholder:text-white/30 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors resize-none"
+          placeholder="Share an update about this bus..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          disabled={isSubmitting}
+          rows={3}
+        />
+        <button
+          type="submit"
+          className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-zinc-800 disabled:text-white/30 text-white font-medium px-6 py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+          disabled={isSubmitting || !newComment.trim()}
+        >
+          <Send className="w-4 h-4" />
+          {isSubmitting ? "Posting..." : "Post Update"}
+        </button>
+      </form>
 
-        {isLoading ? (
-          <div className="loading-comments">Loading comments...</div>
-        ) : comments.length > 0 ? (
-          <div className="comments-container">
-            {comments.map((comment) => (
-              <div key={comment.id} className="comment-item mobile-comment">
-                <p className="comment-content">{comment.content}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="comment-id">#{comment.id}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-comments">No updates yet. Be the first to comment!</p>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="text-center text-white/40 py-8">Loading updates...</div>
+      ) : comments.length > 0 ? (
+        <div className="space-y-3">
+          {comments.map((comment) => (
+            <div key={comment.id} className="bg-zinc-900/30 border border-zinc-800/50 rounded-xl px-4 py-3 space-y-2">
+              <p className="text-white/80 text-sm leading-relaxed">{comment.content}</p>
+              <span className="text-xs text-orange-500/50">Update #{comment.id}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-white/30 py-8 text-sm">No updates yet. Be the first to share!</div>
+      )}
     </div>
-  );
+  )
 }
