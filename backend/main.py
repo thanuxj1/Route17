@@ -3,15 +3,16 @@ from fastapi import FastAPI
 from routers import comments
 from routers import bus as bus_router
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
 app = FastAPI()
 
-# Fixed CORS configuration - NO TRAILING SLASHES
+# CORS configuration - NO TRAILING SLASHES
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://route17.vercel.app",  # No trailing slash
-        "http://localhost:5173",
+        "https://route17.vercel.app",  # Your frontend URL
+        "http://localhost:5173",  # Local development
     ],
     allow_credentials=True,
     allow_methods=["*"],  
@@ -28,3 +29,6 @@ def root():
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy", "database": "mongodb"}
+
+# Vercel handler using Mangum
+handler = Mangum(app)
