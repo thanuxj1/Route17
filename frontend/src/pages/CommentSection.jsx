@@ -59,6 +59,18 @@ export default function CommentSection({ busId }) {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   }
 
+  const formatFullDate = (timestamp) => {
+    if (!timestamp) return null
+    const date = new Date(timestamp)
+    return date.toLocaleDateString("en-US", {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
   useEffect(() => {
     fetchComments()
   }, [busId])
@@ -97,9 +109,16 @@ export default function CommentSection({ busId }) {
           {comments.map((comment) => (
             <div key={comment.id} className="bg-zinc-900/30 border border-zinc-800/50 rounded-xl px-4 py-3 space-y-2">
               <p className="text-white/80 text-sm leading-relaxed">{comment.content}</p>
-              {comment.created_at && (
-                <span className="text-xs text-orange-500/50">{formatTimestamp(comment.created_at)}</span>
-              )}
+              <div className="flex flex-col space-y-1">
+                {comment.created_at && (
+                  <>
+                    <span className="text-xs text-orange-500/50">{formatTimestamp(comment.created_at)}</span>
+                    <span className="text-xs text-white/30" title={formatFullDate(comment.created_at)}>
+                      {formatFullDate(comment.created_at)}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>

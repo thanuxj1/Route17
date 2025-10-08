@@ -16,10 +16,39 @@ function formatTime24to12(time24) {
   return `${hour}:${minute} ${ampm}`
 }
 
+// ✅ Helper: find the closest upcoming bus
+function getNextBus(busTimes) {
+  const now = new Date()
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+  const futureBuses = busTimes
+    .map((bus) => {
+      const [h, m] = bus.arrival_time.split(":").map(Number)
+      const totalMinutes = h * 60 + m
+      return { ...bus, totalMinutes }
+    })
+    .filter((bus) => bus.totalMinutes >= currentMinutes && !bus.checked)
+    .sort((a, b) => a.totalMinutes - b.totalMinutes)
+
+  if (futureBuses.length > 0) {
+    return futureBuses[0]
+  } else {
+    const sortedAll = busTimes
+      .map((bus) => {
+        const [h, m] = bus.arrival_time.split(":").map(Number)
+        const totalMinutes = h * 60 + m
+        return { ...bus, totalMinutes }
+      })
+      .sort((a, b) => a.totalMinutes - b.totalMinutes)
+    return sortedAll[0] || null
+  }
+}
+
 function UserBusView() {
   const [busTimes, setBusTimes] = useState([])
   const [openTab, setOpenTab] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [nextBus, setNextBus] = useState(null)
 
   useEffect(() => {
     fetchBusTimes()
@@ -29,6 +58,8 @@ function UserBusView() {
     try {
       const data = await getBusTimes()
       setBusTimes(data)
+      const closestBus = getNextBus(data)
+      setNextBus(closestBus)
     } catch (err) {
       console.error("Failed to fetch bus times:", err)
     } finally {
@@ -43,8 +74,6 @@ function UserBusView() {
   if (loading) {
     return <LoadingSpinner fullPage />
   }
-
-  const nextBus = busTimes.find((bus) => !bus.checked)
 
   return (
     <div className="min-h-screen bg-black">
@@ -262,7 +291,7 @@ function UserBusView() {
             opacity: 0.6;
           }
         }
-        
+
         @keyframes flame-right {
           0%, 100% {
             transform: translate(0, -50%) scale(1);
@@ -273,7 +302,7 @@ function UserBusView() {
             opacity: 0.5;
           }
         }
-        
+
         @keyframes flame-bottom {
           0%, 100% {
             transform: translate(-50%, 0) scale(1);
@@ -284,7 +313,7 @@ function UserBusView() {
             opacity: 0.6;
           }
         }
-        
+
         @keyframes flame-left {
           0%, 100% {
             transform: translate(0, -50%) scale(1);
@@ -295,7 +324,7 @@ function UserBusView() {
             opacity: 0.5;
           }
         }
-        
+
         @keyframes flicker {
           0%, 100% {
             opacity: 0.3;
@@ -306,7 +335,7 @@ function UserBusView() {
             transform: scale(1.2);
           }
         }
-        
+
         @keyframes orbit {
           0% {
             transform: translate(-50%, -50%) rotate(0deg) translateX(80px) rotate(0deg);
@@ -323,7 +352,7 @@ function UserBusView() {
             opacity: 0;
           }
         }
-        
+
         @media (min-width: 640px) {
           @keyframes orbit {
             0% {
@@ -342,7 +371,7 @@ function UserBusView() {
             }
           }
         }
-        
+
         @media (min-width: 1024px) {
           @keyframes orbit {
             0% {
