@@ -9,14 +9,12 @@ class BusTimeCreate(BaseModel):
     status: str = "On Time"
     checked: Optional[bool] = False
 
-
 class BusTimeUpdate(BaseModel):
     bus_number: Optional[str] = None
     arrival_time: Optional[time] = None
     destination: Optional[str] = None
     status: Optional[str] = None
     checked: Optional[bool] = None
-
 
 class BusTimeResponse(BaseModel):
     id: str = Field(alias="_id")
@@ -36,15 +34,11 @@ class BusTimeResponse(BaseModel):
 
     class Config:
         populate_by_name = True
-        json_encoders = {
-            str: str
-        }
 
-
+# Comments
 class CommentCreate(BaseModel):
     content: str
     bus_id: str
-
 
 class CommentOut(BaseModel):
     id: str = Field(alias="_id")
