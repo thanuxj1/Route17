@@ -43,7 +43,7 @@ export default function CommentSection({ busId }) {
   }
 
   const formatTimestamp = (timestamp) => {
-    if (!timestamp) return null
+    if (!timestamp) return "Recently"
     const date = new Date(timestamp)
     const now = new Date()
     const diffMs = now - date
@@ -60,7 +60,7 @@ export default function CommentSection({ busId }) {
   }
 
   const formatFullDate = (timestamp) => {
-    if (!timestamp) return null
+    if (!timestamp) return "Date not available"
     const date = new Date(timestamp)
     return date.toLocaleDateString("en-US", {
       year: 'numeric',
@@ -110,14 +110,12 @@ export default function CommentSection({ busId }) {
             <div key={comment.id} className="bg-zinc-900/30 border border-zinc-800/50 rounded-xl px-4 py-3 space-y-2">
               <p className="text-white/80 text-sm leading-relaxed">{comment.content}</p>
               <div className="flex flex-col space-y-1">
-                {comment.created_at && (
-                  <>
-                    <span className="text-xs text-orange-500/50">{formatTimestamp(comment.created_at)}</span>
-                    <span className="text-xs text-white/30" title={formatFullDate(comment.created_at)}>
-                      {formatFullDate(comment.created_at)}
-                    </span>
-                  </>
-                )}
+                <span className="text-xs text-orange-500/50">
+                  {formatTimestamp(comment.created_at)}
+                </span>
+                <span className="text-xs text-white/30" title={formatFullDate(comment.created_at)}>
+                  {formatFullDate(comment.created_at)}
+                </span>
               </div>
             </div>
           ))}

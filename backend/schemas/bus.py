@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, validator
 from typing import Optional
-from datetime import time
+from datetime import time, datetime
 
 class BusTimeCreate(BaseModel):
     bus_number: str
@@ -50,6 +50,7 @@ class CommentOut(BaseModel):
     id: str = Field(alias="_id")
     content: str
     bus_id: str
+    created_at: datetime
 
     @validator('id', pre=True)
     def convert_objectid(cls, v):
