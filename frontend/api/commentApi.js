@@ -1,6 +1,7 @@
+// services/commentsApi.js - Update to handle timestamps
+
 import axios from "axios";
 
-// Use local backend in development, production backend in production
 const API_BASE = import.meta.env.DEV 
   ? "http://127.0.0.1:8000"
   : (import.meta.env.VITE_API_BASE?.replace(/\/$/, "") || "https://route17road.vercel.app");
@@ -13,6 +14,8 @@ export async function getComments(busId) {
     return data.map((comment) => ({
       ...comment,
       id: comment._id || comment.id,
+      // Ensure created_at is a valid date
+      created_at: comment.created_at || new Date().toISOString(),
     }));
   } catch (err) {
     console.error("Error fetching comments:", err);
@@ -26,7 +29,11 @@ export async function createComment({ content, busId }) {
       content,
       bus_id: busId,
     });
-    return { ...data, id: data._id || data.id };
+    return { 
+      ...data, 
+      id: data._id || data.id,
+      created_at: data.created_at || new Date().toISOString(),
+    };
   } catch (err) {
     console.error("Error posting comment:", err);
     throw err;

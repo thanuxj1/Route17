@@ -10,6 +10,7 @@ export default function CommentSection({ busId }) {
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
+  const [currentTime, setCurrentTime] = useState(Date.now())
 
   const fetchComments = async () => {
     setIsLoading(true)
@@ -44,14 +45,17 @@ export default function CommentSection({ busId }) {
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "Recently"
+    // Handle both UTC and local timestamps
     const date = new Date(timestamp)
-    const now = new Date()
-    const diffMs = now - date
+    // If the timestamp is in UTC, it will be automatically converted to local time
+    const diffMs = currentTime - date.getTime()
+    const diffSecs = Math.floor(diffMs / 1000)
     const diffMins = Math.floor(diffMs / 60000)
     const diffHours = Math.floor(diffMs / 3600000)
     const diffDays = Math.floor(diffMs / 86400000)
 
-    if (diffMins < 1) return "Just now"
+    if (diffSecs < 10) return "Just now"
+    if (diffSecs < 60) return `${diffSecs}s ago`
     if (diffMins < 60) return `${diffMins}m ago`
     if (diffHours < 24) return `${diffHours}h ago`
     if (diffDays < 7) return `${diffDays}d ago`
@@ -71,6 +75,16 @@ export default function CommentSection({ busId }) {
     })
   }
 
+  // Real-time timestamp updates - updates every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now())
+    }, 1000) // Update every second for real-time display
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Fetch comments on mount and when busId changes
   useEffect(() => {
     fetchComments()
   }, [busId])
