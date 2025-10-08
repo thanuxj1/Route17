@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE?.replace(/\/$/, "") || "http://127.0.0.1:8000";
+// Use local backend in development, production backend in production
+const API_BASE = import.meta.env.DEV 
+  ? "http://127.0.0.1:8000"
+  : (import.meta.env.VITE_API_BASE?.replace(/\/$/, "") || "https://route17road.vercel.app");
 
 const COMMENTS_URL = `${API_BASE}/comments`;
 
